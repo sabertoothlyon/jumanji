@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jumanji Riddle Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg: #120d08;
+    --bg-glow: #2a1d10;
+    --board: min(92vw, 440px);
+    --gold: #f0b94d;
+    --gold-glow: rgba(240,185,77,0.55);
+    --font-display: "Cinzel", Georgia, "Times New Roman", serif;
+    --accent: #f0b94d;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: radial-gradient(ellipse at 50% 40%, var(--bg-glow), var(--bg) 72%);
+    padding-block: 24px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    overflow-x: hidden;
+  }
+
+  /* The board: a carved wooden square with leaves and a cream stone path. */
+  .board {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    display: block;
+    width: var(--board);
+    max-width: 100%;
+    aspect-ratio: 1;
+    border-radius: 26px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 30% 22%, rgba(255,255,255,0.12), rgba(255,255,255,0) 40%),
+      linear-gradient(145deg, #94643a, #5e3a1e);
+    box-shadow: 0 30px 50px -20px rgba(0,0,0,0.9), inset 0 0 0 3px rgba(0,0,0,0.35), inset 0 -16px 30px rgba(0,0,0,0.35);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .board:focus-visible { outline: 3px solid var(--accent); outline-offset: 6px; }
+
+  .leaf {
+    position: absolute;
+    display: block;
+    width: 11%;
+    height: 5.5%;
+    border-radius: 0 100% 0 100%;
+    background: linear-gradient(135deg, #5f7a55, #2b3d2a);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25);
+    opacity: 0.9;
+  }
+
+  /* Cream stone path in a ring around the window. */
+  .path {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 90%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    display: block;
+    background: repeating-conic-gradient(#ebe3cb 0 7deg, #b7ab8b 7deg 8deg);
+    -webkit-mask: radial-gradient(circle, transparent 0 63%, #000 63.5% 98%, transparent 99%);
+            mask: radial-gradient(circle, transparent 0 63%, #000 63.5% 98%, transparent 99%);
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.45));
+  }
+
+  /* Bronze rim with a zigzag edge. */
+  .rim {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 68%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    display: block;
+    background:
+      radial-gradient(circle, transparent 0 86%, rgba(0,0,0,0.5) 87%, transparent 90%),
+      repeating-conic-gradient(#5a4128 0 5deg, #9c7a4c 5deg 10deg);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.6);
+  }
+  .rim::before {
+    content: "";
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    background: linear-gradient(150deg, #b99562, #5c4326);
+  }
+
+  /* The green glass. */
+  .glass {
+    position: absolute;
+    inset: 9%;
+    border-radius: 50%;
+    display: block;
+    overflow: hidden;
+    background: #0b1d10;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.85), inset 0 0 0 3px rgba(0,0,0,0.5);
+  }
+  .glass::before {
+    content: "";
+    position: absolute;
+    inset: -25%;
+    background: conic-gradient(from 0deg, #0b1d10, #2f6a2a, #0c2412, #478a38, #0b1d10, #1f4a22, #0b1d10);
+    filter: blur(22px);
+    animation: swirl 26s linear infinite;
+  }
+  .glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 32% 24%, rgba(255,255,255,0.22), rgba(255,255,255,0) 30%),
+      radial-gradient(circle, rgba(0,0,0,0) 55%, rgba(0,0,0,0.6) 100%);
+  }
+  @keyframes swirl { to { transform: rotate(360deg); } }
+  .board.shaking .glass::before { animation-duration: 1.2s; }
+
+  .text {
+    position: absolute;
+    inset: 15%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .riddle {
+    margin: 0;
+    width: 100%;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--gold);
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.22;
+    letter-spacing: 0.03em;
+    text-shadow: 0 0 8px var(--gold-glow), 0 1px 0 rgba(0,0,0,0.6);
+    overflow-wrap: anywhere;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+  .riddle .ln { display: block; text-wrap: balance; }
+  .riddle.idle { letter-spacing: 0.14em; }
+  .board.shaking .riddle { opacity: 0; }
+  .riddle.show { animation: surface 1.6s ease-out both; }
+
+  /* Text rises through the glass: blurred and dim first, then sharp. */
+  @keyframes surface {
+    0%   { opacity: 0; filter: blur(9px); transform: scale(0.94) translateY(6%); }
+    55%  { opacity: 0.8; filter: blur(3px); }
+    100% { opacity: 1; filter: blur(0); transform: scale(1) translateY(0); }
+  }
+
+  .board.shaking { animation: shake 0.75s cubic-bezier(.36,.07,.19,.97) both; }
+  @keyframes shake {
+    10%, 90% { transform: translate3d(-3px, 0, 0) rotate(-1.5deg); }
+    20%, 80% { transform: translate3d(6px, -4px, 0) rotate(2deg); }
+    30%, 50%, 70% { transform: translate3d(-9px, 3px, 0) rotate(-3deg); }
+    40%, 60% { transform: translate3d(9px, -3px, 0) rotate(3deg); }
+  }
+
+  .hint {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #b99562;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .board.shaking { animation: none; }
+    .glass::before { animation: none; }
+    .riddle.show { animation: none; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<button class="board" id="board" type="button" aria-label="Jumanji riddle board. Shake the phone or activate this button for a riddle.">
+  <span class="path" aria-hidden="true"></span>
+  <span class="rim" aria-hidden="true"></span>
+  <span class="glass">
+    <span class="text"><p class="riddle idle" id="riddle" aria-live="polite">Roll the dice</p></span>
+  </span>
+</button>
+<p class="hint">Tap or shake</p>
+
+<script>
+var RIDDLES = [
+  ["AT NIGHT THEY FLY, YOU BETTER RUN,", "THESE WINGED THINGS ARE NOT MUCH FUN."],
+  ["IN THE JUNGLE YOU MUST WAIT,", "UNTIL THE DICE READ FIVE OR EIGHT."],
+  ["A TINY BITE CAN MAKE YOU ITCH.", "MAKE YOU SNEEZE, MAKE YOU TWITCH."],
+  ["THIS WILL NOT BE AN EASY MISSION,", "MONKEYS SLOW THE EXPEDITION."],
+  ["HIS FANGS ARE SHARP. HE LIKES YOUR TASTE.", "YOUR PARTY BETTER MOVE, POSTE HASTE."],
+  ["THEY GROW MUCH FASTER THAN BAMBOO.", "TAKE CARE OR THEY’LL COME AFTER YOU."],
+  ["A HUNTER FROM THE DARKEST WILD,", "MAKES YOU FEEL JUST LIKE A CHILD."],
+  ["DON’T BE FOOLED, IT ISN’T THUNDER.", "STAYING PUT WOULD BE A BLUNDER."],
+  ["THE LAW OF JUMANJI HAVING BEEN BROKEN,", "YOU WILL SLIP BACK EVEN MORE THAN YOUR TOKEN."],
+  ["EVERY MONTH AT THE QUARTER MOON,", "THERE’LL BE A MONSOON IN YOUR LAGOON."],
+  ["BEWARE THE GROUND ON WHICH YOU STAND,", "THE FLOOR IS QUICKER THAN THE SAND."],
+  ["THERE IS A LESSON YOU WILL LEARN:", "SOMETIMES YOU MUST GO BACK A TURN."],
+  ["NEED A HAND? WHY, YOU JUST WAIT.", "WE’LL HELP YOU OUT, WE EACH HAVE EIGHT."],
+  ["YOU’RE ALMOST THERE WITH MUCH AT STAKE,", "BUT NOW THE GROUND BEGINS TO QUAKE."]
+];
+
+  var board = document.getElementById("board");
+  var riddle = document.getElementById("riddle");
+  var last = -1;
+  var busy = false;
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Scatter a fixed set of leaves around the board, behind the path. */
+  (function leaves() {
+    var seed = 7;
+    function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < 26; i++) {
+      var s = document.createElement("span");
+      s.className = "leaf";
+      s.style.left = (rnd() * 90) + "%";
+      s.style.top = (rnd() * 94) + "%";
+      s.style.transform = "rotate(" + Math.floor(rnd() * 360) + "deg)";
+      s.setAttribute("aria-hidden", "true");
+      frag.appendChild(s);
+    }
+    board.insertBefore(frag, board.firstChild);
+  })();
+
+  function pick() {
+    var i;
+    do { i = Math.floor(Math.random() * RIDDLES.length); } while (i === last);
+    last = i;
+    return RIDDLES[i];
+  }
+
+  /* Shrink the type until the riddle fits inside the glass. */
+  function fit() {
+    var box = riddle.parentNode;
+    var size = box.clientWidth * (riddle.classList.contains("idle") ? 0.15 : 0.105);
+    riddle.style.fontSize = size + "px";
+    var guard = 0;
+    while ((riddle.offsetHeight > box.clientHeight || riddle.scrollWidth > box.clientWidth + 1) && size > 8 && guard < 120) {
+      size -= 0.5;
+      riddle.style.fontSize = size + "px";
+      guard++;
+    }
+  }
+
+  function setLines(lines) {
+    riddle.textContent = "";
+    for (var i = 0; i < lines.length; i++) {
+      var d = document.createElement("span");
+      d.className = "ln";
+      d.textContent = lines[i];
+      riddle.appendChild(d);
+    }
+  }
+
+  function reveal() {
+    setLines(pick());
+    riddle.classList.remove("idle", "show");
+    fit();
+    board.classList.remove("shaking");
+    void riddle.offsetWidth;
+    riddle.classList.add("show");
+    busy = false;
+  }
+
+  function shake() {
+    if (busy) return;
+    busy = true;
+    riddle.classList.remove("show");
+    if (reduced) { setTimeout(reveal, 250); return; }
+    board.classList.remove("shaking");
+    void board.offsetWidth;
+    board.classList.add("shaking");
+    setTimeout(reveal, 750);
+  }
+
+  fit();
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fit); }
+  window.addEventListener("resize", fit);
+
+  /* Shake detection: sums the jump in acceleration between readings. */
+  var lx = null, ly = null, lz = null, lastShake = 0, listening = false;
+  function onMotion(e) {
+    var a = e.accelerationIncludingGravity;
+    if (!a || a.x == null) return;
+    if (lx !== null) {
+      var jolt = Math.abs(a.x - lx) + Math.abs(a.y - ly) + Math.abs(a.z - lz);
+      var now = Date.now();
+      if (jolt > 28 && now - lastShake > 1200) { lastShake = now; shake(); }
+    }
+    lx = a.x; ly = a.y; lz = a.z;
+  }
+  function listen() {
+    if (listening) return;
+    listening = true;
+    try { window.addEventListener("devicemotion", onMotion); } catch (err) {}
+  }
+
+  /* Android and desktop browsers allow motion events outright. iPhones ask once, on a tap. */
+  var needsAsk = false;
+  try { needsAsk = typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function"; } catch (err) {}
+  if (!needsAsk) listen();
+
+  board.addEventListener("click", function () {
+    if (needsAsk) {
+      needsAsk = false;
+      try {
+        DeviceMotionEvent.requestPermission().then(function (r) { if (r === "granted") listen(); }).catch(function () {});
+      } catch (err) {}
+    }
+    shake();
+  });
+</script>
+</body>
+</html>
