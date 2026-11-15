@@ -1,212 +1,294 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#171b14">
-<title>JUMANJI — The Game</title>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>JUMANJI - The Game</title>
 <style>
-:root{--ink:#20251c;--paper:#e8dfc8;--gold:#c69a45;--moss:#536447;--rust:#8e4934;--shadow:#080b08}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#171b14;color:var(--paper);font-family:Georgia,"Times New Roman",serif}
-body{overflow-x:hidden;background:radial-gradient(ellipse at 50% 15%,#394431 0,#20271e 48%,#10140f 100%)}
-button{font:inherit;cursor:pointer}
-#app{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 18px 24px;gap:12px}
-header{width:min(1100px,100%);display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{letter-spacing:.32em;font-size:clamp(17px,3vw,25px);color:#d9c28b;text-shadow:0 2px 5px #000}
-.subtitle{font:11px/1.4 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#a8a58d;text-align:right}
-#board-wrap{width:min(100%,1040px);position:relative;padding:12px;border:1px solid #9b8354;background:linear-gradient(135deg,#756344,#29291e 18%,#4b4934 50%,#1c2119 100%);box-shadow:0 18px 50px #000b,inset 0 0 0 4px #191b14,inset 0 0 0 6px #9b835455}
-#board{width:100%;display:block;aspect-ratio:900/620;background:#b7aa85;box-shadow:inset 0 0 28px #332c1b}
-#board .space{stroke:#423d2b;stroke-width:2.2;filter:url(#tileShadow)}
-#board .num{font: bold 11px Arial,sans-serif;fill:#2a2b20;text-anchor:middle;dominant-baseline:central;pointer-events:none}
-#board .event-mark{font:10px Arial,sans-serif;fill:#f8edcc;text-anchor:middle;dominant-baseline:central;pointer-events:none}
-#board .route{fill:none;stroke:#534c36;stroke-width:24;stroke-linecap:round;stroke-linejoin:round;opacity:.35}
-#board .route-edge{fill:none;stroke:#e7d8ac;stroke-width:27;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
-#board .player-token{stroke:#f4e9c8;stroke-width:2.4;filter:url(#tokenShadow)}
-#board .token-label{font:bold 11px Arial,sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:central;pointer-events:none}
-.board-caption{position:absolute;left:25px;top:18px;font:10px Arial,sans-serif;letter-spacing:.18em;color:#3e3928;text-transform:uppercase}
-.controls{width:min(1040px,100%);display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch}
-.player-panel,.center-panel{background:#171c15dd;border:1px solid #8d784d;padding:12px 14px;box-shadow:0 6px 18px #0006}
-.player-panel{display:flex;align-items:center;gap:10px;min-width:0}
-.player-panel.active{outline:2px solid #c49a4c;background:#25271b}
-.pip{width:15px;height:15px;border-radius:50%;flex:none;border:2px solid #eee0b9}
-.p1{background:#a34c35}.p2{background:#d0b36c}
-.player-info{min-width:0}.player-name{font-size:15px;color:#e8d9b2}.player-meta{font:11px Arial,sans-serif;color:#aaa78d;margin-top:4px}
-.center-panel{min-width:180px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px}
-#turn-label{font:10px Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#c8b47d}
-#dice{font:bold 30px/1 Arial,sans-serif;letter-spacing:7px;color:#f2e8cd;text-shadow:0 2px 5px #000}
-#roll{border:1px solid #d1b36f;background:linear-gradient(#b28a42,#795a2b);color:#fff4d6;padding:10px 22px;letter-spacing:.12em;text-transform:uppercase;font:bold 12px Arial,sans-serif;box-shadow:0 3px 0 #3d2b15}
-#roll:disabled{opacity:.45;cursor:not-allowed}
-#status{width:min(1040px,100%);font:12px/1.5 Arial,sans-serif;text-align:center;color:#c5bea4;min-height:18px}
-#rules{background:none;border:0;color:#bda46d;text-decoration:underline;text-underline-offset:3px;font:11px Arial,sans-serif}
-#event-screen{position:fixed;inset:0;z-index:10;display:none;overflow:hidden;background:#10140f}
-#event-screen.show{display:flex;align-items:center;justify-content:center}
-.event-backdrop{position:absolute;inset:0;overflow:hidden}
-.event-backdrop:before,.event-backdrop:after{content:"";position:absolute;inset:-20%;background:radial-gradient(ellipse at 50% 70%,#0000 0 25%,#000b 90%);pointer-events:none}
-.event-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:min(48vw,390px);opacity:.20;filter:drop-shadow(0 20px 30px #000)}
-.event-content{position:relative;z-index:1;width:min(720px,90vw);text-align:center;padding:34px 28px;background:#11150fd9;border:1px solid #c6a45d;box-shadow:0 20px 80px #000b}
-.kicker{font:11px Arial,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#d2b56f}
-#event-title{font-size:clamp(32px,7vw,66px);line-height:1.02;margin:18px 0 12px;color:#f0dfb5;text-shadow:0 3px 12px #000}
-#event-message{font-size:clamp(16px,2.5vw,21px);line-height:1.5;color:#e1d6b8;max-width:570px;margin:0 auto 22px}
-#event-consequence{font:12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#d6b66c;margin-bottom:24px}
-#continue{background:#b28a42;color:#fff2d1;border:1px solid #e2c27a;padding:13px 28px;text-transform:uppercase;letter-spacing:.15em;font:bold 12px Arial,sans-serif}
-#event-screen.lion{background:radial-gradient(ellipse at 50% 50%,#75462b,#20160f 70%)}
-#event-screen.monkeys{background:radial-gradient(ellipse at 50% 50%,#66723c,#172014 75%)}
-#event-screen.monsoon{background:linear-gradient(150deg,#192b3c,#080e17)}
-#event-screen.guide{background:radial-gradient(ellipse at 50% 50%,#8b7447,#1b2119 75%)}
-#event-screen.tsetse{background:radial-gradient(ellipse at 50% 50%,#4d5430,#10150f 75%)}
-#event-screen.rhino{background:radial-gradient(ellipse at 50% 50%,#75614b,#211a14 75%)}
-#event-screen.python{background:radial-gradient(ellipse at 50% 50%,#496044,#10180f 75%)}
-#event-screen.volcano{background:radial-gradient(ellipse at 50% 65%,#c34b1e,#35150e 65%,#100d0b)}
-#event-screen.shortcut{background:radial-gradient(ellipse at 50% 50%,#a88a48,#222117 75%)}
-#event-screen.monsoon .event-art{animation:rain 1s linear infinite}
-#event-screen.volcano .event-art{animation:rumble .18s linear infinite alternate}
-#event-screen.rhino .event-art{animation:charge .6s ease-in-out infinite alternate}
-@keyframes rain{0%{transform:translateY(-3%)}100%{transform:translateY(3%)}}
-@keyframes rumble{from{transform:translate(-5px,2px)}to{transform:translate(5px,-2px)}}
-@keyframes charge{from{transform:translateX(-2%)}to{transform:translateX(2%)}}
-#intro{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at center,#4b5035,#10140f 75%)}
-.intro-card{width:min(620px,94vw);padding:34px 28px;text-align:center;border:1px solid #b99b5d;background:#151a12eF;box-shadow:0 20px 80px #000}
-.intro-card h1{font-size:clamp(42px,9vw,76px);letter-spacing:.12em;color:#e0c68a;margin:0 0 8px}
-.intro-card p{color:#d5cbb0;line-height:1.6;font-size:16px}
-.warning{font-style:italic;color:#c4a96a!important}
-#begin{margin-top:10px;padding:14px 30px;background:#a37b39;border:1px solid #d9bc79;color:#fff1d1;letter-spacing:.15em;text-transform:uppercase;font:bold 12px Arial,sans-serif}
-#rules-modal{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;background:#000c;padding:18px}
-#rules-modal.show{display:flex}.rules-card{max-width:580px;background:#1b2118;border:1px solid #b99b5d;padding:26px;color:#e7dcc0;line-height:1.55}
-.rules-card h2{color:#d7bd7d}.rules-card button{background:#a37b39;border:0;color:white;padding:10px 20px}
-@media(max-width:650px){#app{padding:10px 8px 18px;gap:9px}#board-wrap{padding:5px}.controls{grid-template-columns:1fr 1fr}.center-panel{grid-column:1/-1;grid-row:1;min-width:0;flex-direction:row;justify-content:space-around}.player-panel{padding:9px 8px}.player-name{font-size:13px}.player-meta{font-size:10px}header{padding:0 4px}}
-</style>
-</head>
-<body>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--t:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:radial-gradient(ellipse at 50% 20%,#2f3a29,#10140f 80%);color:#e8dfc8;font-family:Georgia,serif;padding:0 max(12px,env(safe-area-inset-right,0px)) 18px max(12px,env(safe-area-inset-left,0px))}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,#0000 40%,#000 130%);opacity:calc(var(--t)*.75)}
+#app{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px;align-items:center;padding-top:12px}
+h1{margin:0;font-size:22px;letter-spacing:.3em;color:#e0c68a}
+#wrap{width:100%;padding:8px;background:linear-gradient(135deg,#756344,#29291e 40%,#1c2119);border:1px solid #9b8354;box-shadow:0 18px 50px #000b}
+svg{display:block;width:100%;background:#a99a6e}
+.tile{stroke:#2d2a1c;stroke-width:2.5}.num{font:bold 20px Arial;fill:#2a2b20;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.dot{fill:#b8452c;stroke:#f2e2b0;stroke-width:1.5}.ff{fill:#ffe9a0;animation:ff 3s ease-in-out infinite}
+@keyframes ff{50%{opacity:.1;transform:translateY(-10px)}}
+.tok{transition:transform .17s ease-out;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{translate:0 -3px}}
+#ctl{width:100%;display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch}
+.pl,.mid{background:#171c15dd;border:1px solid #8d784d;padding:10px;font:12px Arial}
+.pl.on{outline:2px solid #c49a4c}.pl b{display:block;font:15px Georgia;margin-bottom:3px}
+.mid{text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+.dice{display:flex;gap:10px;justify-content:center}.dice.r{animation:rl .12s linear infinite}
+@keyframes rl{25%{transform:rotate(-14deg) translateY(-4px)}75%{transform:rotate(14deg) translateY(3px)}}
+button{font:bold 12px Arial;letter-spacing:.12em;text-transform:uppercase;color:#fff4d6;background:linear-gradient(#b28a42,#795a2b);border:1px solid #d1b36f;padding:10px 18px;cursor:pointer}
+button:disabled{opacity:.45}#status{font:12px/1.5 Arial;text-align:center;color:#c5bea4;min-height:36px}
+#mute,#zclose{background:none;border:0;color:#bda46d;font-size:11px;text-decoration:underline}
+#ev{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center;overflow:hidden;background:#10140f}
+#ev.show{display:flex;animation:zin .7s ease-out}@keyframes zin{from{opacity:0;transform:scale(1.25);filter:blur(10px)}}
+.a{position:absolute;filter:drop-shadow(0 14px 18px #000);line-height:1}
+.fx{position:absolute;inset:0;display:none;pointer-events:none}
+#ev.monsoon .fr,#ev.monsoon .ff2,#ev.volcano .fe,#ev.volcano .ff2{display:block}
+.fr{background:repeating-linear-gradient(100deg,#0000 0 7px,#a9d0ff66 7px 8px);background-size:140px 140px;animation:rn .3s linear infinite}
+@keyframes rn{to{background-position:-40px 140px}}
+.ff2{background:#fff;opacity:0;animation:fl 3.6s infinite}@keyframes fl{0%,88%,100%{opacity:0}90%{opacity:.85}92%{opacity:.1}94%{opacity:.7}}
+.fe{background:radial-gradient(ellipse at 50% 110%,#ff7a1fcc,#0000 60%);animation:gl .5s ease-in-out infinite alternate}@keyframes gl{to{opacity:.55}}
+#ev.volcano .art,#ev.rhino .art{animation:sh .14s linear infinite alternate}@keyframes sh{from{transform:translate(-5px,2px)}to{transform:translate(5px,-2px)}}
+#ev.lion{background:radial-gradient(#75462b,#1c130d 75%)}#ev.monkeys{background:radial-gradient(#66723c,#141d12 75%)}
+#ev.monsoon{background:linear-gradient(150deg,#1d3347,#060b12)}#ev.guide{background:radial-gradient(#8b7447,#191f17 75%)}
+#ev.tsetse{background:radial-gradient(#4d5430,#0e130d 75%)}#ev.rhino{background:radial-gradient(#7a6550,#1d1712 75%)}
+#ev.python{background:radial-gradient(#496044,#0e160d 75%)}#ev.volcano{background:radial-gradient(ellipse at 50% 70%,#c34b1e,#35150e 65%,#100d0b)}
+#ev.shortcut{background:radial-gradient(#a88a48,#1e1d14 75%)}
+#ev.win{background:conic-gradient(from 0deg at 50% 45%,#6b4d17,#e9c46a,#6b4d17,#e9c46a,#6b4d17,#e9c46a,#6b4d17);animation:zin .7s,sp 30s linear infinite}
+.ec{position:relative;z-index:2;width:min(560px,92vw);text-align:center;padding:24px 20px;background:#11150fdd;border:1px solid #c6a45d;box-shadow:0 20px 80px #000b;margin-top:34vh}
+#et{font-size:clamp(28px,8vw,50px);margin:6px 0;color:#f0dfb5}#em{line-height:1.5;margin:0 0 10px}#ee{font:12px Arial;letter-spacing:.12em;text-transform:uppercase;color:#d6b66c;margin-bottom:14px}
+#intro{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:radial-gradient(#4b5035,#10140f 75%);text-align:center;padding:20px}
+#intro h1{font-size:clamp(40px,12vw,70px);margin-bottom:12px}#intro p{max-width:460px;line-height:1.6;color:#d5cbb0}
+#rd{font:700 clamp(15px,4.4vw,24px)/1.35 Georgia,serif;letter-spacing:.04em;text-transform:uppercase;color:#f0b94d;text-shadow:0 0 8px #f0b94d88;margin-bottom:10px;animation:sf 1.8s ease-out both}
+@keyframes sf{from{opacity:0;filter:blur(9px);transform:scale(.94)}}#rd .l{display:block}
+.ec.rid #et,.ec.rid #em,.ec.rid #ee,.ec.rid #go{animation:fi .8s 1.9s both}@keyframes fi{from{opacity:0}}
+.die{width:40px;height:40px;padding:5px;border-radius:8px;background:linear-gradient(145deg,#faf3dc,#d8cfae);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);box-shadow:0 3px 0 #8a7c52,0 6px 10px #0008}
+.die i{display:none}.die i.on{display:block;width:7px;height:7px;border-radius:50%;background:#1a1a14;place-self:center}
+.dice.r .die:nth-child(2){animation:rl .13s linear infinite reverse}
+#trap{width:100%;height:16px;margin-top:-6px;background:linear-gradient(#3a2e1c,#241c10);border:1px solid #6b5a38;opacity:.8}
+#z{position:fixed;inset:0;z-index:12;display:none;flex-direction:column;align-items:center;gap:10px;padding:12px max(12px,env(safe-area-inset-left,0px));overflow:auto;background:radial-gradient(#1b2a52,#060a18)}
+#z.show{display:flex;animation:lift .9s ease-out}@keyframes lift{from{opacity:0;transform:translateY(40%) scale(.9)}}
+#zw{position:relative;width:min(100%,640px)}#zb{width:100%;display:block;border:8px solid #f1e8d0;background:#0a1230;box-shadow:0 18px 50px #000b}
+.zctl{width:min(100%,560px);display:grid;grid-template-columns:1fr auto 1fr;gap:8px}
+#zstat{font:12px/1.5 Arial;color:#b9c4e6;text-align:center;min-height:34px;max-width:560px}
+#zc{position:absolute;left:50%;bottom:12px;width:min(300px,72%);transform:translate(-50%,24px) scale(.94);opacity:0;visibility:hidden;pointer-events:none;transition:transform .5s cubic-bezier(.2,.9,.3,1.25),opacity .3s,visibility 0s .5s;background:#2f8a4f;border:3px solid #e8f5d8;padding:14px;text-align:center;font-family:Arial;color:#f2ffe8;z-index:3;box-shadow:0 10px 30px #000a}
+#zc.up{transform:translate(-50%,0);opacity:1;visibility:visible;pointer-events:auto;transition-delay:0s}.zt{font:bold 17px/1.25 Georgia;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}#zce{font:12px Arial;margin-bottom:10px}
+#zclose{color:#8fa0d0}#trap,button{touch-action:manipulation}@keyframes a1{to{transform:translate(-50%,-50%) scale(1.12) rotate(4deg)}}@keyframes a2{to{transform:translate(-50%,-56%) rotate(-6deg)}}@keyframes a3{to{transform:translate(-30%,-65%) rotate(12deg)}}@keyframes sp{to{filter:hue-rotate(20deg)}}
+</style></head><body>
 <div id="app">
-<header><div class="brand">JUMANJI</div><div class="subtitle">A game for those who seek<br>to find a way to leave their world behind</div></header>
-<div id="board-wrap">
-<div class="board-caption">The game board · 42 spaces</div>
-<svg id="board" viewBox="0 0 900 620" role="img" aria-label="Jumanji winding path board">
-<defs>
- <filter id="tileShadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="1" dy="3" stdDeviation="2" flood-color="#292316" flood-opacity=".55"/></filter>
- <filter id="tokenShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="1" dy="3" stdDeviation="2" flood-color="#000" flood-opacity=".7"/></filter>
- <linearGradient id="paper" x2="0.8" y2="1"><stop stop-color="#d9cba5"/><stop offset="1" stop-color="#a89b72"/></linearGradient>
- <pattern id="grain" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="3" cy="8" r="1" fill="#665b3d" opacity=".18"/><path d="M14 22l5-2" stroke="#665b3d" opacity=".15"/></pattern>
-</defs>
-<rect width="900" height="620" fill="url(#paper)"/><rect width="900" height="620" fill="url(#grain)"/>
-<path d="M28 35 Q450 5 872 35 L872 585 Q450 610 28 585Z" fill="none" stroke="#5e563d" stroke-width="5" opacity=".65"/>
-<g id="path-layer"></g><g id="spaces-layer"></g>
-<g id="start-label"><circle cx="72" cy="70" r="39" fill="#46563a" stroke="#e0d0a4" stroke-width="5"/><text x="72" y="66" text-anchor="middle" fill="#f0e2bd" font-size="10" font-family="Georgia">DEEPEST</text><text x="72" y="80" text-anchor="middle" fill="#f0e2bd" font-size="10" font-family="Georgia">JUNGLE</text></g>
-<g id="finish-label"><circle cx="450" cy="310" r="53" fill="#a77a31" stroke="#f0d48d" stroke-width="6"/><path d="M414 328v-27h12v-15h13v15h12v-31h15v31h12v27Z" fill="#f1d28a" stroke="#704d1d" stroke-width="2"/><text x="450" y="347" text-anchor="middle" font-size="13" font-family="Georgia" font-weight="bold" fill="#fff0c8">JUMANJI</text></g>
-<g id="tokens-layer"></g>
-</svg>
+<h1>JUMANJI</h1>
+<div id="wrap"><svg id="b" viewBox="0 0 1000 1000" role="img" aria-label="Jumanji board with a winding path of 42 spaces"></svg></div>
+<div id="ctl">
+ <div class="pl on" id="p0"><b>Peter</b><span id="m0"></span></div>
+ <div class="mid"><div id="lab"></div><div class="dice" id="dice"><div class="die" id="d0"></div><div class="die" id="d1"></div></div><button id="roll">Roll the dice</button><button id="again" hidden>Play again</button></div>
+ <div class="pl" id="p1"><b>Judy</b><span id="m1"></span></div>
 </div>
-<div class="controls">
- <div class="player-panel active" id="panel-0"><span class="pip p1"></span><div class="player-info"><div class="player-name">Peter</div><div class="player-meta" id="meta-0">At the Deepest Jungle</div></div></div>
- <div class="center-panel"><div id="turn-label">Peter's turn</div><div id="dice">⚄ ⚄</div><button id="roll">Roll the dice</button></div>
- <div class="player-panel" id="panel-1"><span class="pip p2"></span><div class="player-info"><div class="player-name">Judy</div><div class="player-meta" id="meta-1">At the Deepest Jungle</div></div></div>
-</div>
+<div id="trap" aria-hidden="true"></div>
 <div id="status">The path is waiting. The game is not.</div>
-<button id="rules">Read the rules</button>
+<button id="mute">Sound: on</button>
 </div>
-
-<div id="event-screen" aria-live="assertive">
- <div class="event-backdrop"><div class="event-art" id="event-art">🦁</div></div>
- <div class="event-content"><div class="kicker">The jungle has entered your world</div><h2 id="event-title">Lion attacks</h2><p id="event-message"></p><div id="event-consequence"></div><button id="continue">Return to the board</button></div>
-</div>
-<div id="intro"><div class="intro-card"><h1>JUMANJI</h1><p>A game for two players. Roll the dice, follow the path, and reach the Golden City.</p><p class="warning">Do not begin unless you intend to finish. The game will not end until one player reaches Jumanji.</p><button id="begin">Open the game</button></div></div>
-<div id="rules-modal"><div class="rules-card"><h2>How to play</h2><p>Peter and Judy take turns rolling two six-sided dice and moving along the 42-space path. Landing on a named space triggers its event and printed consequence. A missed turn is skipped. Backward movement is applied immediately.</p><p>The shortcut grants another roll. Reach the Jumanji circle to win, then declare the name of the city aloud to end the game.</p><p><em>Reconstruction note:</em> The book reveals only selected spaces. Unspecified spaces are represented as quiet, unmarked spaces. Their exact wording and positions are not documented here. The placement of the eight hazards and shortcut beyond the known first lion space is an illustrative game-design choice.</p><button id="close-rules">Close</button></div></div>
+<div id="ev"><div class="fx fr"></div><div class="fx fe"></div><div class="art" id="art"></div><div class="fx ff2"></div>
+ <div class="ec"><div id="rd"></div><div id="et"></div><p id="em"></p><div id="ee"></div><button id="go">Return to the board</button></div></div>
+<div id="z"><div id="zw"><svg id="zb" viewBox="0 0 900 640" role="img" aria-label="Zathura space board"></svg>
+<div id="zc"><div class="zt" id="zct"></div><div id="zce"></div><button id="zgo">Fly on</button></div></div>
+<div class="zctl"><div class="pl on" id="zp0"><b>Danny</b><span id="zm0"></span></div>
+<div class="mid"><div id="zlab"></div><div class="dice" id="zdice"><div class="die" id="zd0"></div><div class="die" id="zd1"></div></div><button id="zroll">Roll the dice</button><button id="zagain" hidden>Play again</button></div>
+<div class="pl" id="zp1"><b>Walter</b><span id="zm1"></span></div></div>
+<div id="zstat">Earth to Zathura and back again.</div><button id="zclose">Close the box</button></div>
+<div id="intro"><div><h1>JUMANJI</h1><p>A game for two players. Roll the dice, follow the path, and reach the Golden City.</p><p><i>Do not begin unless you intend to finish.</i></p><button id="begin">Open the game</button></div></div>
 <script>
 (()=>{
-const NS='http://www.w3.org/2000/svg';
-const layer=document.getElementById('spaces-layer'), pathLayer=document.getElementById('path-layer'), tokenLayer=document.getElementById('tokens-layer');
-const cubic=(p0,p1,p2,p3,t)=>{let u=1-t;return {x:u*u*u*p0.x+3*u*u*t*p1.x+3*u*t*t*p2.x+t*t*t*p3.x,y:u*u*u*p0.y+3*u*u*t*p1.y+3*u*t*t*p2.y+t*t*t*p3.y}};
-const segments=[
- [{x:115,y:120},{x:25,y:190},{x:55,y:420},{x:190,y:520},11],
- [{x:190,y:520},{x:315,y:610},{x:470,y:570},{x:465,y:115},12],
- [{x:465,y:115},{x:465,y:15},{x:760,y:30},{x:770,y:470},12],
- [{x:770,y:470},{x:780,y:570},{x:570,y:560},{x:510,y:365},7]
-];
-let pts=[];
-segments.forEach((s,si)=>{for(let i=0;i<s[4];i++){let t=i/s[4];pts.push(cubic(s[0],s[1],s[2],s[3],t));}});
-const events={
- 6:{key:'lion',title:'Lion attacks',message:'A lion appears in the room. The piano is no longer a safe place to stand.',effect:'Move back two spaces.',delta:-2,art:'🦁'},
- 13:{key:'monkeys',title:'Monkeys steal food',message:'A dozen monkeys burst into the kitchen and raid the food.',effect:'Miss one turn.',skip:true,art:'🐒'},
- 18:{key:'monsoon',title:'Monsoon season begins',message:'Thunder cracks. Torrential rain pours into the house as if the walls have vanished.',effect:'Lose one turn.',skip:true,art:'⛈️'},
- 23:{key:'guide',title:'Guide gets lost',message:'A dazed safari guide appears, hunched over a map and unable to find the way.',effect:'Lose one turn.',skip:true,art:'🧭'},
- 28:{key:'tsetse',title:'Bitten by a tsetse fly',message:'A tsetse fly bites. Sleeping sickness takes hold, and the player falls asleep.',effect:'Lose one turn.',skip:true,art:'🪰'},
- 33:{key:'rhino',title:'Rhinoceros stampede',message:'A herd of rhinoceroses thunders through the house, shaking everything in its path.',effect:'Go back two spaces.',delta:-2,art:'🦏'},
- 37:{key:'python',title:'Python sneaks into camp',message:'An eight-foot python quietly appears, creeping across the mantle clock.',effect:'Go back one space.',delta:-1,art:'🐍'},
- 40:{key:'volcano',title:'Volcano erupts',message:'The room shakes. Molten lava pours from the fireplace as the volcano erupts.',effect:'Go back three spaces.',delta:-3,art:'🌋'},
- 30:{key:'shortcut',title:'A hidden shortcut',message:'A shortcut opens along the trail. The path gives you another chance to move toward the Golden City.',effect:'Roll again.',again:true,art:'🌿'}
-};
-const colors=['#d9c99b','#7e8b62','#c5a56b','#9b7955'];
-const positions=[{pos:0,turn:0}];
-function svg(tag,attrs,parent){let el=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));parent.appendChild(el);return el;}
-let d='M '+pts.map(p=>`${p.x},${p.y}`).join(' L ');
-svg('path',{d, class:'route-edge'},pathLayer);svg('path',{d,class:'route'},pathLayer);
-pts.forEach((p,i)=>{
- const g=svg('g',{transform:`translate(${p.x} ${p.y})`},layer);
- let ev=events[i+1], fill=ev?(ev.key==='shortcut'?'#c6a04f':'#9b6044'):colors[i%colors.length];
- svg('rect',{x:-19,y:-15,width:38,height:30,rx:3,fill, class:'space'},g);
- svg('text',{x:0,y:ev? -2:1,class:'num'},g).textContent=String(i+1);
- if(ev)svg('text',{x:0,y:10,class:'event-mark'},g).textContent=ev.key==='shortcut'?'↗':'✦';
-});
-const players=[{name:'Peter',pos:0,skip:0,color:'#a34c35'},{name:'Judy',pos:0,skip:0,color:'#c7a64f'}];
-let current=0,locked=false,gameOver=false;
-function render(){
- tokenLayer.innerHTML='';
- players.forEach((pl,i)=>{
-  let p=pl.pos===0?{x:72+(i?18:-18),y:70}:pts[Math.min(41,pl.pos-1)];
-  let g=svg('g',{transform:`translate(${p.x+(i?8:-8)} ${p.y+(i?7:-7)})`},tokenLayer);
-  svg('circle',{r:12,fill:pl.color,class:'player-token'},g);
-  svg('text',{x:0,y:1,class:'token-label'},g).textContent=pl.name[0];
-  document.getElementById('meta-'+i).textContent=pl.pos===0?'At the Deepest Jungle':`Space ${pl.pos} of 42`;
-  document.getElementById('panel-'+i).classList.toggle('active',i===current&&!gameOver);
- });
- document.getElementById('turn-label').textContent=gameOver?'Game complete':players[current].name+"'s turn";
- document.getElementById('roll').disabled=locked||gameOver;
+const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id),B=$('b');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),rng=s=>()=>(s=(s*9301+49297)%233280)/233280;
+const mk=root=>(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||root).appendChild(e);return e},el=mk(B);
+/* Catmull-Rom spline through control points -> polyline, with at(distance) giving position + normal */
+function track(Q,segs=12){const P=[];
+ for(let i=0;i<Q.length-1;i++){const p0=Q[Math.max(0,i-1)],p1=Q[i],p2=Q[i+1],p3=Q[Math.min(Q.length-1,i+2)];
+  for(let k=0;k<segs;k++){const t=k/segs,t2=t*t,t3=t2*t;P.push([0,1].map(c=>.5*(2*p1[c]+(p2[c]-p0[c])*t+(2*p0[c]-5*p1[c]+4*p2[c]-p3[c])*t2+(3*p1[c]-p0[c]-3*p2[c]+p3[c])*t3)))}}
+ P.push(Q[Q.length-1]);
+ const cum=[0];for(let i=1;i<P.length;i++)cum.push(cum[i-1]+Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]));
+ const L=cum[cum.length-1];
+ return{L,at(s){s=Math.max(0,Math.min(L,s));let i=1;while(i<cum.length-1&&cum[i]<s)i++;
+  const f=(s-cum[i-1])/(cum[i]-cum[i-1]||1),a=P[i-1],b=P[i],dx=b[0]-a[0],dy=b[1]-a[1],h=Math.hypot(dx,dy)||1;
+  return{x:a[0]+dx*f,y:a[1]+dy*f,nx:-dy/h,ny:dx/h}}}}
+/* Dice: pip layout on a 3x3 grid, shared by both games (pre = element id prefix) */
+const PIPS=[[4],[0,8],[0,4,8],[0,2,6,8],[0,2,4,6,8],[0,2,3,5,6,8]];
+const die=(pre,k,n)=>{$(pre+k).innerHTML=Array.from({length:9},(_,c)=>`<i${PIPS[n-1].includes(c)?' class="on"':''}></i>`).join('')};
+const showDice=(pre,a=1,b=1)=>{die(pre,0,a);die(pre,1,b)};
+async function rollDice(id,pre){const box=$(id),r=()=>1+Math.random()*6|0,a=r(),b=r();
+ box.classList.add('r');diceRattle();
+ for(let i=0;i<9;i++){showDice(pre,r(),r());await sleep(80)}
+ box.classList.remove('r');showDice(pre,a,b);return[a,b]}
+async function stepTo(p,to,max,draw,ms){to=Math.max(0,Math.min(max+1,to));while(p.pos!==to){p.pos+=Math.sign(to-p.pos);step(p.pos);draw();await sleep(ms)}}
+/* ---- Board geometry: centerline traced from the book illustration (teardrop left loop, arch over the center, wide right loop) ---- */
+const CP=[[548,490],[595,548],[605,620],[600,690],[600,760],[610,820],[655,880],[720,905],[810,885],[860,830],[865,765],[850,700],[815,640],[800,580],[805,520],[835,460],[870,405],[880,320],[834,249],[764,201],[690,163],[612,146],[525,143],[450,160],[385,195],[345,250],[328,318],[328,385],[350,445],[375,520],[400,590],[420,655],[440,715],[445,770],[437,830],[390,880],[310,912],[235,918],[170,880],[140,815],[140,745],[155,675],[172,615],[188,553],[190,480],[165,400],[145,320],[150,255],[162,225]];
+const {L,at}=track(CP),N=42,TS=L/N;
+/* tile width varies along the path: wide on the sides, narrower where the board curves under the bottom */
+const WK=[[0,98],[1,98],[3,92],[5,90],[7,100],[29,100],[30,74],[31,64],[32,68],[33,104],[42,106]];
+const wd=u=>{for(let i=1;i<WK.length;i++){const[a,x]=WK[i-1],[b,y]=WK[i];if(u<=b)return x+(y-x)*(u-a)/(b-a)}return WK[WK.length-1][1]};
+const rnd=rng(5);
+const SX=528,SY=410,CX=168,CY=160;
+el('rect',{width:1000,height:1000,fill:'#5e6a49'});
+for(let i=0;i<80;i++){const x=rnd()*1000,y=rnd()*1000;el('ellipse',{cx:x,cy:y,rx:20,ry:7,fill:rnd()<.5?'#6f7d55':'#47553a',opacity:.5,transform:`rotate(${rnd()*180} ${x} ${y})`})}
+el('rect',{x:20,y:20,width:960,height:960,fill:'none',stroke:'#efe6c8','stroke-width':14});
+el('circle',{cx:SX,cy:SY,r:60,fill:'#46563a',stroke:'#e6dbb5','stroke-width':6});
+el('path',{d:'M-16 8q16-32 32 0z',transform:`translate(${SX} ${SY}) scale(1.6)`,fill:'#cdbf8f'});
+const EV={
+3:{k:'bat',t:'Bats swarm',m:'Winged shapes pour out of the dark.',e:'Go back one space.',d:-1,r:['AT NIGHT THEY FLY, YOU BETTER RUN,','THESE WINGED THINGS ARE NOT MUCH FUN.'],art:[['🦇',30,36,22,'a2'],['🦇',68,30,28,'a1'],['🦇',50,62,18,'a2']],s:'bat',bg:'#2a2140,#07060e'},
+6:{k:'lion',t:'Lion attacks',m:'A lion appears in the room. The piano is no longer a safe place to stand.',e:'Move back two spaces.',d:-2,r:['HIS FANGS ARE SHARP. HE LIKES YOUR TASTE.','YOUR PARTY BETTER MOVE, POSTE HASTE.'],art:[['🦁',50,40,46,'a1'],['🎹',16,66,14]],s:'lion'},
+8:{k:'mosquito',t:'Mosquito bite',m:'A tiny whine in your ear, and then the itching starts.',e:'Miss one turn.',skip:1,r:['A TINY BITE CAN MAKE YOU ITCH.','MAKE YOU SNEEZE, MAKE YOU TWITCH.'],art:[['🦟',50,38,40,'a3']],s:'tsetse',bg:'#3d4a2a,#0d120a'},
+11:{k:'jail',t:'Jungle imprisonment',m:'Vines close around you. You are stuck until the dice show five or eight.',e:'Stay until you roll a total of 5 or 8.',jail:1,r:['IN THE JUNGLE YOU MUST WAIT,','UNTIL THE DICE READ FIVE OR EIGHT.'],art:[['🌴',24,40,28],['🌴',76,40,28],['⛓️',50,60,20,'a2']],s:'jail',bg:'#2d4a2a,#08120a'},
+13:{k:'monkeys',t:'Monkeys steal food',m:'A dozen monkeys burst into the kitchen and raid the food.',e:'Miss one turn.',skip:1,r:['THIS WILL NOT BE AN EASY MISSION,','MONKEYS SLOW THE EXPEDITION.'],art:[['🐒',22,38,22,'a1'],['🐒',74,32,26,'a2'],['🐒',50,62,20,'a1'],['🍌',30,70,12],['🍌',68,66,12]],s:'monkeys'},
+15:{k:'law',t:'The law is broken',m:'Something was not done by the rules. The game takes it back.',e:'Go back three spaces.',d:-3,r:['THE LAW OF JUMANJI HAVING BEEN BROKEN,','YOU WILL SLIP BACK EVEN MORE THAN YOUR TOKEN.'],art:[['⏪',50,40,40,'a1'],['📜',50,68,16]],s:'law',bg:'#4a3a1d,#100b05'},
+17:{k:'plants',t:'Vegetation grows',m:'Purple flowers and pods burst through the floorboards.',e:'Go back two spaces.',d:-2,r:['THEY GROW MUCH FASTER THAN BAMBOO.','TAKE CARE OR THEY’LL COME AFTER YOU.'],art:[['🌺',26,44,26,'a1'],['🌿',66,40,34,'a2'],['🌱',50,70,16]],s:'veg',bg:'#4a2d5a,#0b0710'},
+19:{k:'monsoon',t:'Monsoon and crocodiles',m:'Thunder cracks. Torrential rain pours in, and something swims through the living room.',e:'Lose one turn.',skip:1,r:['EVERY MONTH AT THE QUARTER MOON,','THERE’LL BE A MONSOON IN YOUR LAGOON.'],art:[['⛈️',50,28,40],['🐊',50,68,24,'a2']],s:'monsoon'},
+21:{k:'spiders',t:'Spiders',m:'Eight legs each, and they all want to help.',e:'Miss one turn.',skip:1,r:['NEED A HAND? WHY, YOU JUST WAIT.','WE’LL HELP YOU OUT, WE EACH HAVE EIGHT.'],art:[['🕷️',26,38,24,'a2'],['🕷️',72,34,28,'a1'],['🕸️',50,62,26]],s:'spiders',bg:'#2b2b2b,#070707'},
+23:{k:'guide',t:'Guide gets lost',m:'A dazed safari guide appears, hunched over a map and unable to find the way.',e:'Lose one turn.',skip:1,art:[['🧭',30,40,26,'a2'],['🧍',66,46,28],['🌿',16,72,16],['🌿',84,72,16]],s:'guide'},
+25:{k:'hunter',t:'Van Pelt',m:'A hunter from the darkest wild steps out of the trees.',e:'Go back three spaces.',d:-3,r:['A HUNTER FROM THE DARKEST WILD,','MAKES YOU FEEL JUST LIKE A CHILD.'],art:[['🧔',50,38,40,'a1'],['🏹',24,68,16],['🌲',80,60,24]],s:'hunter',bg:'#5a3a20,#120b06'},
+27:{k:'quicksand',t:'Quicksand',m:'The ground gives way beneath your feet.',e:'Miss one turn.',skip:1,r:['BEWARE THE GROUND ON WHICH YOU STAND,','THE FLOOR IS QUICKER THAN THE SAND.'],art:[['🏜️',50,40,44,'a2'],['🧍',50,66,14]],s:'quick',bg:'#a07a3a,#1a1208'},
+29:{k:'tsetse',t:'Bitten by a tsetse fly',m:'A tsetse fly bites. Sleeping sickness takes hold, and the player falls asleep.',e:'Lose one turn.',skip:1,art:[['🪰',50,38,46,'a3'],['😴',72,64,16]],s:'tsetse'},
+31:{k:'shortcut',t:'A hidden shortcut',m:'A passage opens through the jungle toward the Golden City.',e:'Roll again.',again:1,art:[['🌿',50,40,40],['✨',50,66,18]],s:'shortcut'},
+33:{k:'rhino',t:'Rhinoceros stampede',m:'A herd thunders through the house, shaking everything in its path.',e:'Go back two spaces.',d:-2,r:['DON’T BE FOOLED, IT ISN’T THUNDER.','STAYING PUT WOULD BE A BLUNDER.'],art:[['🦏',26,42,32],['🦏',62,36,36],['🐘',48,66,24],['🦓',82,62,16]],s:'rhino'},
+35:{k:'undo',t:'Undo quicksand',m:'The game rewinds your last move.',e:'Go back the amount you just rolled.',undo:1,r:['THERE IS A LESSON YOU WILL LEARN:','SOMETIMES YOU MUST GO BACK A TURN.'],art:[['⏪',50,42,44,'a1'],['🎲',50,70,14]],s:'undo',bg:'#3a3a5a,#0a0a12'},
+37:{k:'python',t:'Python sneaks into camp',m:'An eight-foot python quietly appears, creeping across the mantle clock.',e:'Go back one space.',d:-1,art:[['🐍',50,36,40,'a2'],['🕰️',50,64,18]],s:'python'},
+39:{k:'quake',t:'Earthquake',m:'You are so close, and now the floor begins to shake.',e:'Go back two spaces.',d:-2,r:['YOU’RE ALMOST THERE WITH MUCH AT STAKE,','BUT NOW THE GROUND BEGINS TO QUAKE.'],art:[['🏚️',50,42,48]],s:'quake',bg:'#4a3a30,#0e0a08'},
+41:{k:'volcano',t:'Volcano erupts',m:'The room shakes. Molten lava pours from the fireplace as the volcano erupts.',e:'Go back three spaces.',d:-3,art:[['🌋',50,42,52],['🔥',24,70,16],['🔥',76,70,16]],s:'volcano'}};
+for(let i=0;i<N;i++){
+ const a=at(i*TS+3),b=at((i+1)*TS-3),ha=wd(i)/2,hb=wd(i+1)/2;
+ const pts=[[a.x+a.nx*ha,a.y+a.ny*ha],[b.x+b.nx*hb,b.y+b.ny*hb],[b.x-b.nx*hb,b.y-b.ny*hb],[a.x-a.nx*ha,a.y-a.ny*ha]].map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ');
+ el('polygon',{points:pts,fill:i%2?'#3f4d38':'#e9e0c4',class:'tile'});
+ const c=at((i+.5)*TS);el('text',{x:c.x,y:c.y,class:'num',style:'fill:'+(i%2?'#cfc7a8':'#2a2b20')}).textContent=i+1;
+ if(EV[i+1])el('circle',{cx:c.x-c.nx*(wd(i+.5)/2+1),cy:c.y-c.ny*(wd(i+.5)/2+1),r:7,class:'dot'});
 }
-function move(pl,amount){
- let target=pl.pos+amount;
- if(target>42) target=42-(target-42); // bounce back from the finish
- pl.pos=Math.max(0,target);
-}
-function showEvent(ev,pl,finishCallback){
- const screen=document.getElementById('event-screen');screen.className='show '+ev.key;
- document.getElementById('event-title').textContent=ev.title;
- document.getElementById('event-message').textContent=ev.message;
- document.getElementById('event-consequence').textContent=ev.effect;
- document.getElementById('event-art').textContent=ev.art;
- document.getElementById('continue').onclick=()=>{screen.className='';finishCallback();};
-}
-function nextTurn(){current=1-current;locked=false;render();}
-function takeTurn(){
- if(locked||gameOver)return;
- locked=true;let pl=players[current];
- if(pl.skip>0){pl.skip--;document.getElementById('status').textContent=pl.name+' loses this turn.';nextTurn();return;}
- let a=1+Math.floor(Math.random()*6),b=1+Math.floor(Math.random()*6),roll=a+b;
- document.getElementById('dice').textContent=a+' + '+b+' = '+roll;
- move(pl,roll);render();
- document.getElementById('status').textContent=pl.name+' rolls '+roll+' and moves to space '+pl.pos+'.';
- if(pl.pos>=42){win(pl);return;}
- let ev=events[pl.pos];
- if(ev){
-  if(ev.skip)pl.skip++;
-  if(ev.delta)move(pl,ev.delta);
-  render();
-  showEvent(ev,pl,()=>{render();document.getElementById('status').textContent=pl.name+': '+ev.effect+(ev.delta?' Now at space '+pl.pos+'.':'');if(ev.again){locked=false;render();}else nextTurn();});
- }else nextTurn();
-}
-function win(pl){
- gameOver=true;render();
- showEvent({key:'shortcut',title:'JUMANJI',message:pl.name+' has reached the Golden City. Speak its name aloud: JUMANJI!',effect:'The game is over. The jungle returns to its world.',art:'🏛️'},pl,()=>{
-  document.getElementById('status').textContent='JUMANJI! '+pl.name+' wins. The game has ended.';
-  document.getElementById('continue').textContent='The game is complete';
-  document.getElementById('roll').disabled=true;
- });
-}
-document.getElementById('roll').addEventListener('click',takeTurn);
-document.getElementById('begin').onclick=()=>document.getElementById('intro').style.display='none';
-document.getElementById('rules').onclick=()=>document.getElementById('rules-modal').classList.add('show');
-document.getElementById('close-rules').onclick=()=>document.getElementById('rules-modal').classList.remove('show');
+el('circle',{cx:CX,cy:CY,r:60,fill:'#a77a31',stroke:'#f0d48d','stroke-width':8});
+el('path',{d:'M-28 18v-26h10v-14h10v14h10v-30h10v30h10v-14h8v40z',transform:`translate(${CX} ${CY}) scale(1.3)`,fill:'#f1d28a',stroke:'#704d1d','stroke-width':1.5});
+for(let i=0;i<12;i++)el('circle',{cx:60+rnd()*880,cy:60+rnd()*880,r:3,class:'ff',style:`animation-delay:${rnd()*3}s`});
+const tk=[0,1].map(i=>{const g=el('g',{class:'tok',style:`animation-delay:${i*.5}s`}),c=i?'#c7a64f':'#a34c35',d=i?'#7a6425':'#5e2a1d',k='#f4e9c8';
+ el('ellipse',{cy:14,rx:13,ry:5,fill:'#000',opacity:.35},g);
+ el('path',{d:'M-11 14q1-14 6-20h10q5 6 6 20z',fill:c,stroke:k,'stroke-width':1.8},g);
+ el('circle',{cy:-12,r:7,fill:c,stroke:k,'stroke-width':1.8},g);
+ el('ellipse',{cy:-17,rx:12,ry:3.5,fill:d,stroke:k,'stroke-width':1.4},g);
+ el('path',{d:'M-7-17q7-12 14 0z',fill:d,stroke:k,'stroke-width':1.4},g);return g});
+const pl=[{n:'Peter',pos:0,skip:0},{n:'Judy',pos:0,skip:0}];
+function place(i){const p=pl[i].pos,o=i?22:-22;let x,y;if(!p){x=SX+o;y=SY}else if(p>N){x=CX+o;y=CY}else{const c=at((p-.5)*TS);x=c.x+o;y=c.y+(i?10:-10)}tk[i].style.transform=`translate(${x}px,${y}px) scale(1.5)`}
+/* ---- Audio: everything synthesized, no files ---- */
+let AC,M,nb,ev=null,muted=false;
+function initAudio(){if(AC)return;AC=new(window.AudioContext||window.webkitAudioContext)();M=AC.createGain();M.gain.value=.8;M.connect(AC.destination);
+ nb=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+ const s=AC.createBufferSource();s.buffer=nb;s.loop=true;const f=AC.createBiquadFilter();f.type='bandpass';f.frequency.value=1100;f.Q.value=.7;AC.am=AC.createGain();AC.am.gain.value=.03;s.connect(f);f.connect(AC.am);AC.am.connect(M);s.start();
+ setInterval(()=>{if(!muted&&Math.random()<.6){const b=AC.currentTime,f0=1800+Math.random()*1400;tone(f0,.01,.12,.04,'sine',0,f0*1.4);tone(f0*1.1,.01,.12,.03,'sine',.15,f0*1.5)}},2200)}
+const out=()=>ev||M;
+function burst(type,f,a,d,v,delay=0,f2){if(!AC)return;const t=AC.currentTime+delay,s=AC.createBufferSource();s.buffer=nb;const fl=AC.createBiquadFilter();fl.type=type;fl.frequency.setValueAtTime(f,t);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t+a+d);
+ const g=AC.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.001,t+a+d);s.connect(fl);fl.connect(g);g.connect(out());s.start(t,Math.random());s.stop(t+a+d+.1)}
+function tone(f,a,d,v,type='sine',delay=0,f2){if(!AC)return;const t=AC.currentTime+delay,o=AC.createOscillator();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+a+d);
+ const g=AC.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.001,t+a+d);o.connect(g);g.connect(out());o.start(t);o.stop(t+a+d+.1)}
+function pad(root,secs){[1,1.5,2].forEach((m,i)=>{if(!AC)return;const t=AC.currentTime,o=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();o.type='sawtooth';o.frequency.value=root*m*(1+i*.003);f.type='lowpass';f.frequency.setValueAtTime(180,t);f.frequency.exponentialRampToValueAtTime(1400,t+secs);
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05,t+secs);o.connect(f);f.connect(g);g.connect(out());o.start(t);o.stop(t+secs+.5)})}
+const rumble=(secs,v)=>{burst('lowpass',70,secs*.8,secs*.3,v);tone(38,secs*.8,secs*.3,v*.9,'sine')};
+const SFX={
+ lion(){rumble(2,.5);tone(140,.15,1.4,.35,'sawtooth',0,50);burst('lowpass',900,.12,1.3,.5,0,150);burst('lowpass',200,.05,.4,.7,1.8)},
+ monkeys(){for(let i=0;i<14;i++){const f=800+Math.random()*900;tone(f,.01,.12,.1,'square',i*.17+Math.random()*.1,f*1.6)}pad(110,3)},
+ monsoon(){burst('highpass',2500,1,4.5,.3);for(let i=0;i<3;i++)burst('lowpass',300,.04,2.6,.9,.6+i*1.9,60);rumble(4,.25)},
+ guide(){burst('bandpass',500,1.5,3,.25,0,1400);tone(220,1,3,.08,'triangle');pad(98,4)},
+ tsetse(){const o=AC.createOscillator(),l=AC.createOscillator(),g=AC.createGain(),lg=AC.createGain(),t=AC.currentTime;o.type='sawtooth';o.frequency.value=190;l.frequency.value=34;lg.gain.value=.05;g.gain.value=.06;l.connect(lg);lg.connect(g.gain);o.connect(g);g.connect(out());o.start(t);l.start(t);o.stop(t+2.6);l.stop(t+2.6);burst('lowpass',200,1,1.5,.25,2.4)},
+ rhino(){for(let i=0;i<16;i++)burst('lowpass',130,.01,.22,.9,i*.17);rumble(3,.5);pad(65,3)},
+ python(){burst('highpass',4500,.4,2.2,.25);tone(70,1,2,.1,'sine');pad(82,3)},
+ volcano(){rumble(3.4,.55);for(let i=0;i<7;i++)burst('highpass',1800,.005,.1,.5,.4+i*.4+Math.random()*.3);burst('lowpass',250,.02,2.6,1,3.4,40);tone(45,.05,2.2,.9,'sine',3.4,25);pad(55,3.4)},
+ shortcut(){[0,4,7,12,16].forEach((n,i)=>tone(330*2**(n/12),.02,.9,.14,'triangle',i*.15));burst('bandpass',3000,.8,1,.08)},
+ bat(){for(let i=0;i<10;i++){const f=3000+Math.random()*1500;tone(f,.005,.06,.08,'sine',i*.13,f*.6)}burst('bandpass',1500,.5,1.5,.2);pad(80,3)},
+ jail(){tone(90,.3,2.5,.2,'sawtooth');for(let i=0;i<3;i++)burst('bandpass',2500,.001,.4,.5,.5+i*.8);pad(73,4)},
+ law(){tone(900,.05,2,.2,'sawtooth',0,60);burst('lowpass',2000,.1,2,.4,0,100);rumble(2,.4)},
+ veg(){burst('bandpass',800,1,2.5,.35,0,3000);burst('highpass',3000,1.5,1.5,.12,.5);pad(98,3)},
+ hunter(){for(let i=0;i<8;i++)burst('lowpass',150,.01,.2,.8,i*.4);tone(98,.2,2.5,.2,'sawtooth',0,90);pad(55,3.5)},
+ quick(){for(let i=0;i<6;i++)tone(80+Math.random()*40,.1,.5,.2,'sine',i*.45,40);burst('lowpass',400,1,2.5,.35,0,80)},
+ undo(){tone(80,.2,2,.2,'triangle',0,1200);burst('bandpass',300,1.5,1,.3,0,3000)},
+ spiders(){for(let i=0;i<30;i++)burst('highpass',5000,.001,.03,.25,i*.1+Math.random()*.08);pad(60,3)},
+ quake(){rumble(3.5,.7);for(let i=0;i<10;i++)burst('bandpass',700,.005,.2,.6,.3+i*.3+Math.random()*.2);pad(50,3)},
+ win(){[0,4,7,12,16,19,24].forEach((n,i)=>tone(262*2**(n/12),.05,2.5,.15,'triangle',i*.22));pad(131,5);burst('highpass',5000,1,2,.1)}};
+function sfxPlay(k){if(!AC||muted)return;ev=AC.createGain();ev.gain.value=1;ev.connect(M);AC.am.gain.value=.01;SFX[k]()}
+function sfxStop(){if(!AC||!ev)return;const e=ev;e.gain.setTargetAtTime(0,AC.currentTime,.25);ev=null;setTimeout(()=>e.disconnect(),1500)}
+const diceRattle=()=>{for(let i=0;i<9;i++)burst('highpass',1800+Math.random()*1500,.001,.05,.35,i*.07)};
+const step=p=>tone(260+p*9,.005,.07,.12,'triangle');
+/* ---- Game flow ---- */
+let cur=0,busy=false,over=false,maxp=0;
+function render(){[0,1].forEach(i=>{place(i);$('m'+i).textContent=pl[i].pos?`Space ${Math.min(pl[i].pos,42)} of 42`:'At the Deepest Jungle';$('p'+i).classList.toggle('on',i===cur&&!over)});
+ $('lab').textContent=over?'Game complete':pl[cur].n+"'s turn";$('roll').disabled=busy||over;$('roll').hidden=over;$('again').hidden=!over;
+ maxp=Math.max(maxp,pl[0].pos,pl[1].pos);document.body.style.setProperty('--t',Math.min(1,maxp/N));if(AC&&!ev)AC.am.gain.value=.03+.05*maxp/N}
+const walk=(p,to)=>stepTo(p,to,N,render,170);
+function scene(E){const V=$('ev');V.className='show '+E.k;V.style.background=E.bg?`radial-gradient(${E.bg})`:'';
+ $('rd').innerHTML=(E.r||[]).map(l=>`<span class="l">${l}</span>`).join('');document.querySelector('.ec').className='ec'+(E.r?' rid':'');
+ $('et').textContent=E.t;$('em').textContent=E.m;$('ee').textContent=E.e;
+ $('art').innerHTML=E.art.map(a=>`<span class="a" style="left:${a[1]}%;top:${a[2]}%;font-size:${a[3]}vmin;transform:translate(-50%,-50%);${a[4]?'animation:'+a[4]+' 1.2s ease-in-out infinite alternate':''}">${a[0]}</span>`).join('');
+ sfxPlay(E.s);return new Promise(r=>{$('go').onclick=()=>{sfxStop();V.className='';V.style.background='';r()}})}
+async function turn(){
+ if(busy||over)return;busy=true;const p=pl[cur];render();
+ if(p.skip){p.skip--;$('status').textContent=p.n+' loses this turn.';cur=1-cur;busy=false;render();return}
+const[a,b]=await rollDice('dice','d'),tot=a+b;
+ if(p.jail){if(tot!==5&&tot!==8){$('status').textContent=`${p.n} rolls ${tot}. Still trapped. Only a 5 or an 8 will do.`;cur=1-cur;busy=false;render();return}p.jail=0}
+ $('status').textContent=`${p.n} rolls ${a} + ${b} = ${tot}.`;p.last=tot;await walk(p,p.pos+tot);
+ if(p.pos>=N){over=true;p.pos=N+1;render();await walk(p,N+1);
+  await scene({k:'win',t:'JUMANJI',m:p.n+' has reached the Golden City. Speak its name aloud: JUMANJI!',e:'The game is over. The jungle returns to its world.',art:[['🏛️',50,26,40,'a2'],['✨',24,30,14,'a1'],['✨',78,20,14,'a2']],s:'win'});
+  $('status').textContent='JUMANJI! '+p.n+' wins. The box feels heavier than it should...';render();return}
+ const E=EV[p.pos];
+ if(E){if(E.skip)p.skip++;if(E.jail)p.jail=1;await scene(E);const d=E.undo?-p.last:E.d;if(d)await walk(p,p.pos+d);
+  $('status').textContent=p.n+': '+E.e+(d?` Now at space ${p.pos}.`:'');if(E.again){busy=false;render();return}}
+ cur=1-cur;busy=false;render()}
+function reset(){pl.forEach(p=>{p.pos=0;p.skip=0;p.jail=0;p.last=0});cur=0;busy=false;over=false;maxp=0;showDice('d');$('status').textContent='The path is waiting. The game is not.';render()}
+$('again').onclick=reset;showDice('d');
+$('roll').onclick=turn;
+$('begin').onclick=()=>{initAudio();if(AC.state==='suspended')AC.resume();$('intro').style.display='none'};
+$('mute').onclick=()=>{muted=!muted;if(M)M.gain.value=muted?0:.8;$('mute').textContent='Sound: '+(muted?'off':'on')};
+
+/* ---- Secret second game: Zathura (tap the bottom of the box three times) ---- */
+(()=>{
+const Z=$('z'),S=$('zb'),ze=mk(S);
+Object.assign(SFX,{
+ zopen(){burst('lowpass',300,1,2,.5,0,3000);pad(55,4)},
+ zmet(){burst('highpass',2500,.01,.15,.4);for(let i=0;i<6;i++)burst('lowpass',180,.01,.3,.8,.2+i*.35);rumble(2.4,.4)},
+ zrob(){for(let i=0;i<10;i++)tone(120+Math.random()*300,.01,.1,.15,'square',i*.15)},
+ zpir(){tone(70,.2,2,.3,'sawtooth',0,55);for(let i=0;i<5;i++)burst('lowpass',200,.01,.2,.8,.4+i*.4);pad(55,3)},
+ zgrav(){tone(100,.1,2.2,.25,'sine',0,700)},zflare(){burst('highpass',800,1.5,1.5,.4,0,6000);tone(60,1,2,.25)},
+ zfuel(){[440,370,311,262,220].forEach((f,i)=>tone(f,.02,.4,.14,'triangle',i*.35))},
+ zlost(){for(let i=0;i<3;i++)tone(1200,.005,.9,.12,'sine',i*1.1);pad(65,3)},
+ zgood(){[0,4,7,12].forEach((n,i)=>tone(392*2**(n/12),.02,.5,.14,'triangle',i*.12))},zclear(){tone(660,.01,.3,.1)},
+ zwin(){SFX.win()}});
+const CP=[[150,505],[165,420],[225,340],[190,250],[250,165],[380,125],[520,170],[620,115],[755,150],[770,225],[745,310],[680,375],[570,340],[470,400],[380,465],[290,430],[215,495],[165,540]];
+const {L,at}=track(CP),N=40,TS=L/N,W=36,TURN=22;
+const rnd=rng(11);
+ze('rect',{width:900,height:640,fill:'#0b1233'});
+for(let i=0;i<110;i++)ze('circle',{cx:rnd()*900,cy:rnd()*640,r:.6+rnd()*1.6,fill:'#fff',opacity:.3+rnd()*.7});
+ze('circle',{cx:95,cy:545,r:46,fill:'#2f6fc4',stroke:'#9fd0ff','stroke-width':3});ze('path',{d:'M70 530q15-20 32-6t-6 28q-20 8-26-22zM108 556q12-6 18 8-12 10-18-8z',fill:'#58a05a'});
+ze('text',{x:95,y:612,fill:'#cfe0ff','text-anchor':'middle',style:'font:bold 14px Georgia;letter-spacing:.2em'}).textContent='EARTH';
+ze('ellipse',{cx:850,cy:150,rx:78,ry:14,fill:'none',stroke:'#d9b6f5','stroke-width':4,transform:'rotate(-18 850 150)'});
+ze('circle',{cx:850,cy:150,r:45,fill:'#8a4fc9',stroke:'#d9b6f5','stroke-width':3});
+ze('path',{d:'M770 170q80 24 160-14',fill:'none',stroke:'#d9b6f5','stroke-width':4,transform:'rotate(-18 850 150)',opacity:.7});
+ze('text',{x:850,y:222,fill:'#f1d9ff','text-anchor':'middle',style:'font:bold 14px Georgia;letter-spacing:.2em'}).textContent='ZATHURA';
+ze('circle',{cx:345,cy:300,r:26,fill:'#e08a3c'});ze('ellipse',{cx:345,cy:300,rx:46,ry:8,fill:'none',stroke:'#f6c27a','stroke-width':4,transform:'rotate(20 345 300)'});
+ze('circle',{cx:125,cy:150,r:20,fill:'#4fb3a6'});
+ze('ellipse',{cx:640,cy:545,rx:46,ry:11,fill:'#b9c4d4',stroke:'#fff','stroke-width':2});ze('path',{d:'M618 540q22-34 44 0z',fill:'#7fd4ff',opacity:.85});
+ze('path',{d:'M420 285l12-34 12 34-6 12h-12z',fill:'#e8e8ee',stroke:'#fff'});ze('path',{d:'M420 285l-9 14 9-4zM444 285l9 14-9-4z',fill:'#d94a3a'});
+const pal=['#e4572e','#f3c24f','#3fa7d6','#59b36b','#b565c9'];
+for(let i=0;i<N;i++){const a=at(i*TS+2),b=at((i+1)*TS-2),h=W/2;
+ ze('polygon',{points:[[a.x+a.nx*h,a.y+a.ny*h],[b.x+b.nx*h,b.y+b.ny*h],[b.x-b.nx*h,b.y-b.ny*h],[a.x-a.nx*h,a.y-a.ny*h]].map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' '),fill:pal[i%5],stroke:'#0b1233','stroke-width':2})}
+ze('rect',{x:395,y:624,width:110,height:8,rx:2,fill:'#000'});
+const tk=[0,1].map(i=>{const g=ze('g',{class:'tok',style:`animation-delay:${i*.5}s`}),c=i?'#4a8fe0':'#d94a3a';
+ ze('path',{d:'M0-20q10 12 8 30h-16q-2-18 8-30z',fill:'#e6e9f2',stroke:'#fff','stroke-width':1.5},g);ze('path',{d:'M-8 6l-8 12 10-3zM8 6l8 12-10-3z',fill:c},g);
+ ze('circle',{cy:-5,r:4,fill:c,stroke:'#fff'},g);ze('path',{d:'M-4 12h8l-4 10z',fill:'#ffb347'},g);return g});
+const pl=[{n:'Danny',pos:0,skip:0},{n:'Walter',pos:0,skip:0}],turned=[0,0];
+let cur=0,busy=false,over=false,lastC=-1;
+const CARDS=[['Meteor shower, take evasive action','Move back two spaces.',-2,0,0,'☄️','zmet'],['Your robot is defective','Miss one turn.',0,1,0,'🤖','zrob'],['Pirate Zorgons board your ship','Move back three spaces.',-3,0,0,'🏴‍☠️','zpir'],['Artificial gravity fails','Move back one space.',-1,0,0,'🌀','zgrav'],['Solar flare, shields down','Miss one turn.',0,1,0,'☀️','zflare'],['Out of fuel, drift in silence','Miss one turn.',0,1,0,'⛽','zfuel'],['Lost in space, recalculating','Move back four spaces.',-4,0,0,'🛰️','zlost'],['A friendly comet offers a tow','Move ahead three spaces.',3,0,0,'🌠','zgood'],['A tailwind from a passing star','Roll again.',0,0,1,'⭐','zgood'],['Clear skies and smooth flying','No hazard. Fly on.',0,0,0,'🚀','zclear'],['Clear skies and smooth flying','No hazard. Fly on.',0,0,0,'🚀','zclear']];
+function zr(){[0,1].forEach(i=>{const p=pl[i].pos,o=i?10:-10;let x,y;if(!p){x=125+o;y=520}else if(p>N){x=95+o;y=545}else{const c=at((p-.5)*TS);x=c.x+o;y=c.y}
+ tk[i].style.transform=`translate(${x}px,${y}px)`;$('zm'+i).textContent=p?(p>N?'Home on Earth':`Space ${p} of ${N}`+(turned[i]?' · returning':'')):'On Earth';$('zp'+i).classList.toggle('on',i===cur&&!over)});
+ $('zlab').textContent=over?'Game complete':pl[cur].n+"'s turn";$('zroll').disabled=busy||over;$('zroll').hidden=over;$('zagain').hidden=!over}
+const zwalk=(p,to)=>stepTo(p,to,N,zr,150);
+function card(t,e,ic,s,btn){$('zct').textContent=ic+' '+t;$('zce').textContent=e;$('zgo').textContent=btn||'Fly on';$('zc').classList.add('up');sfxPlay(s);
+ return new Promise(r=>{$('zgo').onclick=async()=>{sfxStop();$('zc').classList.remove('up');await sleep(500);r()}})}
+async function zturn(){
+ if(busy||over)return;busy=true;const p=pl[cur];zr();
+ if(p.skip){p.skip--;$('zstat').textContent=p.n+' loses this turn.';cur=1-cur;busy=false;zr();return}
+ const [a,b]=await rollDice('zdice','zd');
+ $('zstat').textContent=`${p.n} rolls ${a} + ${b} = ${a+b}.`;await zwalk(p,p.pos+a+b);
+ const i=cur;if(!turned[i]&&p.pos>=TURN&&p.pos<=N){turned[i]=1;$('zstat').textContent=p.n+' rounds the purple planet. Zathura! Now head home.'}
+ let win=async()=>{over=true;p.pos=N+1;zr();await card('Welcome home, '+p.n,'The game is over. Zathura is complete.','🏠','zwin','Close card')};
+ if(p.pos>=N){await win();return}
+ let c;do{c=Math.random()*CARDS.length|0}while(c===lastC);lastC=c;const k=CARDS[c];
+ if(k[3])p.skip++;await card(k[0],k[1],k[5],k[6]);if(k[2])await zwalk(p,p.pos+k[2]);
+ $('zstat').textContent=p.n+': '+k[1]+(k[2]?` Now at space ${p.pos}.`:'');
+ if(p.pos>=N){await win();return}
+ if(k[4]){busy=false;zr();return}cur=1-cur;busy=false;zr()}
+function zreset(){pl.forEach(p=>{p.pos=0;p.skip=0});turned[0]=turned[1]=0;cur=0;busy=false;over=false;lastC=-1;showDice('zd');$('zstat').textContent='Earth to Zathura and back again.';zr()}
+$('zroll').onclick=zturn;$('zagain').onclick=zreset;showDice('zd');zr();
+const open=()=>{Z.classList.add('show');sfxPlay('zopen');const mine=ev;setTimeout(()=>{if(ev===mine)sfxStop()},4200)};
+const close=()=>{Z.classList.remove('show');sfxStop();render()};
+let taps=0,tt;$('trap').onclick=()=>{taps++;clearTimeout(tt);tt=setTimeout(()=>taps=0,3000);if(taps>=3){taps=0;open()}};
+$('zclose').onclick=close;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&Z.classList.contains('show'))close()});
+})();
 render();
 })();
-</script>
-</body>
-</html>
+</script></body></html>
