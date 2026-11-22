@@ -55,10 +55,15 @@ button:disabled{opacity:.45}#status{font:12px/1.5 Arial;text-align:center;color:
 #z{position:fixed;inset:0;z-index:12;display:none;flex-direction:column;align-items:center;gap:10px;padding:12px max(12px,env(safe-area-inset-left,0px));overflow:auto;background:radial-gradient(#1b2a52,#060a18)}
 #z.show{display:flex;animation:lift .9s ease-out}@keyframes lift{from{opacity:0;transform:translateY(40%) scale(.9)}}
 #zw{position:relative;width:min(100%,640px)}#zb{width:100%;display:block;border:8px solid #f1e8d0;background:#0a1230;box-shadow:0 18px 50px #000b}
-.zctl{width:min(100%,560px);display:grid;grid-template-columns:1fr auto 1fr;gap:8px}
+.zctl{width:min(100%,560px);display:flex;flex-direction:column;gap:8px}#zpl{display:grid;grid-template-columns:1fr 1fr;gap:8px}#zpl .nm{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}#zhouse{display:flex;gap:5px;align-items:center;font:12px Arial;color:#b9c4e6}#zhouse i{width:24px;height:20px;background:#c9a96a;border:1px solid #f1e8d0;display:block}#zhouse i.x{opacity:.15;transform:rotate(14deg)}.lnk{background:none;border:0;color:#bda46d;font-size:11px;text-decoration:underline;padding:2px}
 #zstat{font:12px/1.5 Arial;color:#b9c4e6;text-align:center;min-height:34px;max-width:560px}
-#zc{position:absolute;left:50%;bottom:12px;width:min(300px,72%);transform:translate(-50%,24px) scale(.94);opacity:0;visibility:hidden;pointer-events:none;transition:transform .5s cubic-bezier(.2,.9,.3,1.25),opacity .3s,visibility 0s .5s;background:#2f8a4f;border:3px solid #e8f5d8;padding:14px;text-align:center;font-family:Arial;color:#f2ffe8;z-index:3;box-shadow:0 10px 30px #000a}
-#zc.up{transform:translate(-50%,0);opacity:1;visibility:visible;pointer-events:auto;transition-delay:0s}.zt{font:bold 17px/1.25 Georgia;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}#zce{font:12px Arial;margin-bottom:10px}
+#zc{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;gap:18px;align-items:center;justify-content:center;background:#000b;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}#zc.up{opacity:1;visibility:visible;transition-delay:0s}
+.zcard{position:relative;width:min(90vw,540px);aspect-ratio:7/4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8% 10%;box-sizing:border-box;border-radius:0;transform:rotate(-1.2deg);
+background:linear-gradient(101deg,transparent 47%,#3a2a1a22 48.4%,#fff6 49.2%,transparent 51%),linear-gradient(8deg,transparent 62%,#3a2a1a1c 63%,#fff5 63.8%,transparent 65.5%),radial-gradient(ellipse at 50% 50%,#0000 50%,#4a361b55 100%),#eee2c2;
+box-shadow:inset 0 0 30px 8px #4a361b77,inset 0 0 4px 1px #2a1d0e99,0 20px 44px #000c;animation:cdrop .55s cubic-bezier(.2,.9,.3,1.2)}
+.zcard:after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.55;background:radial-gradient(circle at 0 0,#2a1d0eaa,transparent 22%),radial-gradient(circle at 100% 0,#2a1d0e88,transparent 18%),radial-gradient(circle at 100% 100%,#2a1d0eaa,transparent 24%),radial-gradient(circle at 0 100%,#2a1d0e77,transparent 20%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .15 0 0 0 0 .1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
+@keyframes cdrop{from{opacity:0;transform:translateY(-40px) rotate(-6deg) scale(.92)}}
+.zt{font:700 clamp(16px,4.6vw,27px)/1.25 Futura,"Century Gothic","Avenir Next","Trebuchet MS",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#1b1812;opacity:.85;text-shadow:0 0 1.5px #0007}#zce{font:500 clamp(12px,3.3vw,17px)/1.4 Futura,"Century Gothic","Avenir Next","Trebuchet MS",sans-serif;color:#1b1812;opacity:.78;margin-top:14px}
 #zclose{color:#8fa0d0}#trap,button{touch-action:manipulation}#ev.illus{flex-direction:column;gap:14px;padding:max(14px,env(safe-area-inset-top,0px)) 14px max(14px,env(safe-area-inset-bottom,0px))}
 #ev.illus .ec{margin-top:0;padding:16px 18px;flex:none}
 #ev.illus .art{position:relative;z-index:1;flex:0 1 auto;min-height:0;display:flex;justify-content:center;filter:drop-shadow(0 14px 22px #000)}
@@ -81,12 +86,10 @@ button:disabled{opacity:.45}#status{font:12px/1.5 Arial;text-align:center;color:
 </div>
 <div id="ev"><div class="fx fr"></div><div class="fx fe"></div><div class="art" id="art"></div><div class="fx ff2"></div>
  <div class="ec"><div id="rd"></div><div id="et"></div><p id="em"></p><div id="ee"></div><button id="go">Return to the board</button></div></div>
-<div id="z"><div id="zw"><svg id="zb" viewBox="0 0 900 640" role="img" aria-label="Zathura space board"></svg>
-<div id="zc"><div class="zt" id="zct"></div><div id="zce"></div><button id="zgo">Fly on</button></div></div>
-<div class="zctl"><div class="pl on" id="zp0"><b>Danny</b><span id="zm0"></span></div>
-<div class="mid"><div id="zlab"></div><div class="dice" id="zdice"><div class="die" id="zd0"></div><div class="die" id="zd1"></div></div><button id="zroll">Roll the dice</button><button id="zagain" hidden>Play again</button></div>
-<div class="pl" id="zp1"><b>Walter</b><span id="zm1"></span></div></div>
-<div id="zstat">Earth to Zathura and back again.</div><button id="zclose">Close the box</button></div>
+<div id="z"><div id="zw"><svg id="zb" viewBox="0 0 900 640" role="img" aria-label="Zathura space board"></svg></div>
+<div id="zhouse"></div><div class="zctl"><div id="zpl"></div><div class="mid"><div id="zlab"></div><button id="zroll">Spin and draw</button><button id="zagain" hidden>Play again</button><button id="zn" class="lnk"></button></div></div>
+<div id="zstat">Earth to Zathura and back again.</div><button id="zclose">Close the box</button>
+<div id="zc"><div class="zcard"><div class="zt" id="zct"></div><div id="zce"></div></div><button id="zgo">Carry out orders</button></div></div>
 <div id="intro"><div><h1>JUMANJI</h1><p>A game for two players. Roll the dice, follow the path, and reach the Golden City.</p><p><i>Do not begin unless you intend to finish.</i></p><button id="begin">Open the game</button></div></div>
 <script>
 (()=>{
@@ -272,37 +275,90 @@ ze('circle',{cx:345,cy:300,r:26,fill:'#e08a3c'});ze('ellipse',{cx:345,cy:300,rx:
 ze('circle',{cx:125,cy:150,r:20,fill:'#4fb3a6'});
 ze('ellipse',{cx:640,cy:545,rx:46,ry:11,fill:'#b9c4d4',stroke:'#fff','stroke-width':2});ze('path',{d:'M618 540q22-34 44 0z',fill:'#7fd4ff',opacity:.85});
 ze('path',{d:'M420 285l12-34 12 34-6 12h-12z',fill:'#e8e8ee',stroke:'#fff'});ze('path',{d:'M420 285l-9 14 9-4zM444 285l9 14-9-4z',fill:'#d94a3a'});
-const pal=['#e4572e','#f3c24f','#3fa7d6','#59b36b','#b565c9'];
+const pal=['#e4572e','#3b7fd4','#f4efe0'],cn=['red','blue','white'],SC=['#d94a3a','#4a8fe0','#59b36b','#f3c24f'];
+const T=16,STARS=[11,27],ZS=[4,9,14,19,23,30,33,37],SP=34,HN=8;
 for(let i=0;i<N;i++){const a=at(i*TS+2),b=at((i+1)*TS-2),h=W/2;
- ze('polygon',{points:[[a.x+a.nx*h,a.y+a.ny*h],[b.x+b.nx*h,b.y+b.ny*h],[b.x-b.nx*h,b.y-b.ny*h],[a.x-a.nx*h,a.y-a.ny*h]].map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' '),fill:pal[i%5],stroke:'#0b1233','stroke-width':2})}
+ ze('polygon',{points:[[a.x+a.nx*h,a.y+a.ny*h],[b.x+b.nx*h,b.y+b.ny*h],[b.x-b.nx*h,b.y-b.ny*h],[a.x-a.nx*h,a.y-a.ny*h]].map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' '),fill:pal[(i+1)%3],stroke:'#0b1233','stroke-width':2})}
+const sp=n=>{const c=at((n-.5)*TS);return c};
+const tx=(x,y,t,s,f)=>ze('text',{x,y,'text-anchor':'middle',fill:f||'#0b1233',style:`font:bold ${s}px Georgia`}).textContent=t;
+{const c=sp(T);ze('circle',{cx:c.x,cy:c.y,r:15,fill:'#6b4a8a',stroke:'#d9b6f5','stroke-width':2});tx(c.x,c.y+4,'T3',10,'#fff');
+ STARS.forEach(n=>{const d=sp(n);tx(d.x,d.y+7,'★',22,'#f3a712')})}
 ze('rect',{x:395,y:624,width:110,height:8,rx:2,fill:'#000'});
-const tk=[0,1].map(i=>{const g=ze('g',{class:'tok',style:`animation-delay:${i*.5}s`}),c=i?'#4a8fe0':'#d94a3a';
- ze('path',{d:'M0-20q10 12 8 30h-16q-2-18 8-30z',fill:'#e6e9f2',stroke:'#fff','stroke-width':1.5},g);ze('path',{d:'M-8 6l-8 12 10-3zM8 6l8 12-10-3z',fill:c},g);
- ze('circle',{cy:-5,r:4,fill:c,stroke:'#fff'},g);ze('path',{d:'M-4 12h8l-4 10z',fill:'#ffb347'},g);return g});
-const pl=[{n:'Danny',pos:0,skip:0},{n:'Walter',pos:0,skip:0}],turned=[0,0];
-let cur=0,busy=false,over=false,lastC=-1;
-const CARDS=[['Meteor shower, take evasive action','Move back two spaces.',-2,0,0,'☄️','zmet'],['Your robot is defective','Miss one turn.',0,1,0,'🤖','zrob'],['Pirate Zorgons board your ship','Move back three spaces.',-3,0,0,'🏴‍☠️','zpir'],['Artificial gravity fails','Move back one space.',-1,0,0,'🌀','zgrav'],['Solar flare, shields down','Miss one turn.',0,1,0,'☀️','zflare'],['Out of fuel, drift in silence','Miss one turn.',0,1,0,'⛽','zfuel'],['Lost in space, recalculating','Move back four spaces.',-4,0,0,'🛰️','zlost'],['A friendly comet offers a tow','Move ahead three spaces.',3,0,0,'🌠','zgood'],['A tailwind from a passing star','Roll again.',0,0,1,'⭐','zgood'],['Clear skies and smooth flying','No hazard. Fly on.',0,0,0,'🚀','zclear'],['Clear skies and smooth flying','No hazard. Fly on.',0,0,0,'🚀','zclear']];
-function zr(){[0,1].forEach(i=>{const p=pl[i].pos,o=i?10:-10;let x,y;if(!p){x=125+o;y=520}else if(p>N){x=95+o;y=545}else{const c=at((p-.5)*TS);x=c.x+o;y=c.y}
- tk[i].style.transform=`translate(${x}px,${y}px)`;$('zm'+i).textContent=p?(p>N?'Home on Earth':`Space ${p} of ${N}`+(turned[i]?' · returning':'')):'On Earth';$('zp'+i).classList.toggle('on',i===cur&&!over)});
- $('zlab').textContent=over?'Game complete':pl[cur].n+"'s turn";$('zroll').disabled=busy||over;$('zroll').hidden=over;$('zagain').hidden=!over}
-const zwalk=(p,to)=>stepTo(p,to,N,zr,150);
-function card(t,e,ic,s,btn){$('zct').textContent=ic+' '+t;$('zce').textContent=e;$('zgo').textContent=btn||'Fly on';$('zc').classList.add('up');sfxPlay(s);
- return new Promise(r=>{$('zgo').onclick=async()=>{sfxStop();$('zc').classList.remove('up');await sleep(500);r()}})}
-async function zturn(){
- if(busy||over)return;busy=true;const p=pl[cur];zr();
- if(p.skip){p.skip--;$('zstat').textContent=p.n+' loses this turn.';cur=1-cur;busy=false;zr();return}
- const [a,b]=await rollDice('zdice','zd');
- $('zstat').textContent=`${p.n} rolls ${a} + ${b} = ${a+b}.`;await zwalk(p,p.pos+a+b);
- const i=cur;if(!turned[i]&&p.pos>=TURN&&p.pos<=N){turned[i]=1;$('zstat').textContent=p.n+' rounds the purple planet. Zathura! Now head home.'}
- let win=async()=>{over=true;p.pos=N+1;zr();await card('Welcome home, '+p.n,'The game is over. Zathura is complete.','🏠','zwin','Close card')};
- if(p.pos>=N){await win();return}
- let c;do{c=Math.random()*CARDS.length|0}while(c===lastC);lastC=c;const k=CARDS[c];
- if(k[3])p.skip++;await card(k[0],k[1],k[5],k[6]);if(k[2])await zwalk(p,p.pos+k[2]);
- $('zstat').textContent=p.n+': '+k[1]+(k[2]?` Now at space ${p.pos}.`:'');
- if(p.pos>=N){await win();return}
- if(k[4]){busy=false;zr();return}cur=1-cur;busy=false;zr()}
-function zreset(){pl.forEach(p=>{p.pos=0;p.skip=0});turned[0]=turned[1]=0;cur=0;busy=false;over=false;lastC=-1;showDice('zd');$('zstat').textContent='Earth to Zathura and back again.';zr()}
-$('zroll').onclick=zturn;$('zagain').onclick=zreset;showDice('zd');zr();
+const mkp=(c,g)=>{ze('path',{d:'M0-20q10 12 8 30h-16q-2-18 8-30z',fill:'#e6e9f2',stroke:'#fff','stroke-width':1.5},g);ze('path',{d:'M-8 6l-8 12 10-3zM8 6l8 12-10-3z',fill:c},g);ze('circle',{cy:-5,r:4,fill:c,stroke:'#fff'},g)};
+const zg={},TY={F:['🔥','Fire'],A:['👨‍🚀','Astronaut'],R:['🤖','Reprogram']};
+let tokAt={};
+const tk=[0,1,2,3].map(i=>{const g=ze('g',{class:'tok',style:`animation-delay:${i*.4}s`});mkp(SC[i],g);return g});
+const rg=ze('g',{class:'tok'});ze('rect',{x:-11,y:-13,width:22,height:22,rx:3,fill:'#9aa4b5',stroke:'#fff','stroke-width':1.5},rg);ze('rect',{x:-7,y:-8,width:14,height:6,fill:'#e4572e'},rg);ze('rect',{x:-9,y:9,width:6,height:8,fill:'#9aa4b5'},rg);ze('rect',{x:3,y:9,width:6,height:8,fill:'#9aa4b5'},rg);
+const NM=['Walter','Danny','Lisa','Astronaut'];let n=4,pl,robot,robotPrev,house,deck=[],cur,busy,over;
+const D=[];const g=(c,a,...ts)=>ts.forEach(t=>D.push([t,c,a]));
+g('N',0,'Cosmic Dust Storm','Blinding Cosmic Rays','Compact Solar System Ahead','Meteor Shower','Asteroid Belt','Traveling Towards Favron’s Many Moons');
+g('K',0,'Accidentally Send Distress Signal to Fleet Leader');g('H',0,'You are Promoted to Fleet Admiral','Your Navigational Experience is Needed');g('A',0,'You Have Been Promoted');
+g('F',2,'You are Promoted to Starship Captain','Astronaut Helps Navigate Past Zorgon Fleet','Would You Like to Swing on a Star?');g('F',1,'Pass Planet Galactagon and Encounter Less Wind Resistance');g('F',5,'Find Uncharted Wormhole');
+g('Z',0,'A Fire Attracts the Zorgon Fleet','You Pass Too Close to a Star and Attract Zorgons','You are Visited by Zorgons','Cosmic Rays Penetrate','Heat in House Attracts Zorgon Fleet','Travel into Zorgon Territory','Run into Zorgon Fleet','Zorgons Prepare to Board Your Vessel');
+g('R',0,'Robot Launches Assault and Attacks Ship','Robot Moves to Strike and Attacks Ship','Robot Engages and Attacks Ship','Robot has System Glitch and Attacks Ship','Robot has Meltdown and Attacks Ship','Robot has Mechanical Failure and Attacks Ship','Robot has Electronic Misfire and Attacks Ship','Robot is Defective and Attacks Ship','Robot Malfunctions and Attacks Ship','Robot Suffers Communication Failure and Attacks Ship');
+g('B',0,'Solar Wind Sweeps Your Vessel Off Course');g('G',1,'Approaching Centra Prestauri, Alter Current Path to Avoid','Flunk Space Academy');g('G',2,'Travel into Darkest Part of Space and Lose Your Way','Maneuver too Close to Comet','Lose Map of Galaxy');g('G',3,'Took Wrong Turn','Hit Time Warp');g('G',5,'Lose Way in Khemdar II’s Rings');
+g('T',0,'You Have Been Demoted');g('L',0,'Gamma Rays Damage Instruments','Polarity on Your Gravity Belt is Reversed','Crew Falls Asleep','Enter Cryonic Sleep Chamber','Stop to Recalculate Distance','Blinded by a Supernova');
+g('M',3,'Robot Engages Warp Drive Mode');g('M',5,'Robot Engages Hyperdrive');g('M',-3,'Robot has Navigational Breakdown');g('C',0,'Robot Defects');g('Y',0,'Robot Misinterprets Orders');g('E',0,'Solar Flare Causes All Gyroscopes to Malfunction');
+const s1=a=>`${a} space${a>1?'s':''}`,AT={N:'Attempt to navigate.',K:'Send the fleet leader back 3 spaces.',H:'Move to the head of the fleet.',A:'Move ahead of the ship in front of you.',Z:'Defend or damage the house.',R:'Defend or move back 5 spaces.',B:'Go back to your last position.',T:'Move to the back of the fleet.',L:'Lose a turn.',C:'Robot attacks the closest ship to him.',Y:'Robot attacks the player closest to Zathura.',E:'Everyone moves back 2 spaces.'};
+const act=([t,c,a])=>AT[c]||(c=='F'?`Move ahead ${s1(a)}.`:c=='G'?`Go back ${s1(a)}.`:`Robot moves ${a>0?'ahead':'back'} ${s1(Math.abs(a))}.`);
+const SND={N:'zmet',Z:'zpir',R:'zrob',B:'zgrav',G:'zlost',T:'zlost',L:'zfuel',F:'zgood',H:'zgood',A:'zgood',K:'zgood',M:'zrob',C:'zrob',Y:'zrob',E:'zflare'};
+const shuf=a=>{for(let i=a.length;i>1;){const j=Math.random()*i--|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const say=t=>$('zstat').textContent=t,col=p=>p<1?'white':cn[p%3];
+const sh=(t,e)=>new Promise(r=>{$('zct').textContent=t;$('zce').textContent=e;$('zc').classList.add('up');$('zgo').onclick=()=>{sfxStop();$('zc').classList.remove('up');setTimeout(r,350)}});
+const drawHouse=()=>{$('zhouse').innerHTML='House: '+Array.from({length:HN},(_,i)=>`<i class="${i<house?'':'x'}"></i>`).join('')};
+function zr(){tk.forEach((t,i)=>{t.style.display=i<n?'':'none';if(i>=n)return;const p=pl[i].pos,o=[[-10,-9],[10,-9],[-10,9],[10,9]][i];let x,y;if(!p){x=125+o[0];y=520+o[1]}else{const c=sp(p);x=c.x+o[0];y=c.y+o[1]}t.style.transform=`translate(${x}px,${y}px)`});
+ const c=sp(robot);rg.style.transform=`translate(${c.x}px,${c.y-17}px)`;
+ $('zpl').innerHTML=pl.map((p,i)=>`<div class="pl${i===cur&&!over?' on':''}"><b class="nm" data-i="${i}" style="color:${SC[i]}">${p.n}</b>${p.pos?'Space '+p.pos+' of '+N:'On Earth'}${p.stuck?' · Tsouris-3':''}${p.skip?' · loses turn':''}<br>${Object.keys(p.t).map(k=>TY[k][0].repeat(p.t[k])).join('')||'–'}</div>`).join('');
+ $('zlab').textContent=over?'Game over':pl[cur].n+"'s turn";$('zroll').disabled=busy||over;$('zroll').hidden=over;$('zagain').hidden=!over;$('zn').textContent='Ships: '+n;$('zn').hidden=!!pl.some(p=>p.pos)&&!over&&0}
+const walk=(p,to)=>stepTo(p,to,N-1,zr,150);
+const others=p=>pl.filter(q=>q!==p),lead=()=>Math.max(...pl.map(p=>p.pos));
+async function rmove(to){robotPrev=robot;to=Math.max(1,Math.min(SP-1,to));if(to===T)to+=to>robot?1:-1;robot=to;zr();const p=pl.find(q=>q.pos===robot);if(p){say(p.n+' is hit by the robot and moves back 5 spaces.');await walk(p,p.pos-5)}}
+async function atk(p,tgt){const q=tgt;const use=[q,...others(q)].find(x=>x.t.R);
+ if(use){use.t.R--;say((use===q?q.n:use.n+' plays a Reprogram token to save '+q.n)+'. The robot is sent back.');zr();await sleep(1100);return}
+ robotPrev=robot;robot=Math.min(SP-1,q.pos)||1;if(robot===T)robot--;zr();say('No Reprogram token. '+q.n+' moves back 5 spaces and the robot stays.');await sleep(900);await walk(q,q.pos-5)}
+async function lose(){house--;drawHouse();SFX.zmet&&0;if(house<1){over=true;zr();await sh('The Zorgons Win','The last piece of the house is gone.');return true}return false}
+async function nav(p){const c=col(p.pos),r=c=='white'?[p]:c=='blue'?[p,pl[(pl.indexOf(p)+1)%n]]:[p,...pl.slice(pl.indexOf(p)+1),...pl.slice(0,pl.indexOf(p))];
+ say(`${p.n} is on a ${c} space: ${r.length>1?r.map(x=>x.n).join(', ')+' may roll':'rolls the asteroid die'}.`);
+ for(const x of r){await sleep(800);const f=Math.random()*6|0;diceRattle();say(`${x.n} rolls the asteroid die: ${f<2?'SAFE.':'asteroid hit.'}`);await sleep(900);if(f<2)return}
+ say('No SAFE roll. A piece of the house is lost.');return lose()}
+async function zorg(p){const u=[p,...others(p)].find(x=>x.t.F||x.t.A);
+ if(u){u.t[u.t.F?'F':'A']--;say(u===p?p.n+' plays a token and distracts the Zorgons.':u.n+' plays a token for '+p.n+'. They swap places.');if(u!==p){[p.pos,u.pos]=[u.pos,p.pos]}zr();await sleep(1100);return}
+ say('No defense token. A piece of the house is taken off.');return lose()}
+async function land(p){zr();const o=[];
+ if(p.pos===robot&&p.pos){say(p.n+' lands on the robot and moves back 5 spaces.');await sleep(800);await walk(p,p.pos-5);return}
+ if(p.pos===T){p.stuck=1;p.free=0;say(p.n+' is pulled into Tsouris-3 until another player spins an even number.');SFX.zgrav&&sfxPlay('zgrav');return}
+ if(STARS.includes(p.pos)){const l=Math.max(...others(p).map(q=>q.pos));say(p.n+' lands on a shooting star and jumps to the front of the fleet!');await walk(p,Math.max(p.pos,l+1));return}
+ const k=tokAt[p.pos];if(k){tokAt[p.pos]=0;zg[p.pos].remove();p.t[k]++;say(p.n+' takes a '+TY[k][1]+' token.')}}
+async function resolve(p,[t,c,a]){let r;const own=p.pos;
+ if(c=='N')r=await nav(p);else if(c=='Z')r=await zorg(p);else if(c=='R')await atk(p,p);
+ else if(c=='F'){await walk(p,p.pos+a);await land(p)}
+ else if(c=='G')await walk(p,p.pos-a);else if(c=='B'){say(p.n+' goes back to '+(p.last?'space '+p.last:'Earth')+'.');await walk(p,p.last)}
+ else if(c=='H'){await walk(p,Math.max(p.pos,Math.max(...others(p).map(q=>q.pos))+1));await land(p)}
+ else if(c=='A'){const f=others(p).filter(q=>q.pos>p.pos).sort((x,y)=>x.pos-y.pos)[0];if(f){await walk(p,f.pos+1);await land(p)}else say('Nobody is ahead of '+p.n+'.')}
+ else if(c=='T')await walk(p,Math.min(p.pos,...others(p).map(q=>q.pos)));
+ else if(c=='K'){const l=pl.find(q=>q.pos===lead());await walk(l,l.pos-3)}
+ else if(c=='L')p.skip=1;else if(c=='M')await rmove(robot+a);
+ else if(c=='C'){const q=others(p).concat(p).sort((x,y)=>Math.abs(x.pos-robot)-Math.abs(y.pos-robot))[0];await atk(p,q)}
+ else if(c=='Y'){const q=[...pl].sort((x,y)=>y.pos-x.pos)[0];await atk(p,q)}
+ else if(c=='E')for(const q of pl)await walk(q,q.pos-2);
+ return r}
+async function zturn(){if(busy||over)return;busy=true;const p=pl[cur];zr();const next=()=>{cur=(cur+1)%n;busy=false;zr()};
+ if(p.skip){p.skip=0;say(p.n+' loses this turn.');return next()}
+ if(p.stuck&&!p.free){say(p.n+' is stuck in the gravity of Tsouris-3.');return next()}
+ if(p.stuck){p.stuck=p.free=0;say(p.n+' presses the lever and escapes Tsouris-3.')}
+ p.last=p.pos;
+ if(p.pos>=N){say(p.n+' spins the planet…');await sleep(1000);if(Math.random()<.5){over=true;house=HN;drawHouse();zr();await sh('Welcome to Zathura, '+p.n,'The orange side faces the path. The house is restored.');return}say('The orange side is not facing the pathway. Take orders.')}
+ else{const s=1+Math.random()*6|0;diceRattle();say(`${p.n} spins ${s}.`);await sleep(700);if(s%2==0)others(p).forEach(q=>{if(q.stuck)q.free=1});await walk(p,p.pos+s);await land(p)}
+ if(!deck.length)deck=shuf(D.slice());const k=deck.pop();sfxPlay(SND[k[1]]);await sh(k[0],act(k));
+ if(await resolve(p,k))return;
+ next()}
+function zreset(){pl=NM.slice(0,n).map(x=>({n:x,pos:0,skip:0,stuck:0,free:0,last:0,t:{F:0,A:0,R:0}}));Object.values(zg).forEach(e=>e.remove());tokAt={};
+ shuf(['F','F','F','A','A','A','R','R']).forEach((k,i)=>{tokAt[ZS[i]]=k;const c=sp(ZS[i]),e=ze('g',{});ze('circle',{cx:c.x,cy:c.y,r:10,fill:'#222',stroke:'#f3c24f','stroke-width':2},e);ze('text',{x:c.x,y:c.y+5,'text-anchor':'middle',fill:'#f3c24f',style:'font:bold 13px Georgia'},e).textContent='Z';zg[ZS[i]]=e});
+ robot=3;robotPrev=3;house=HN;deck=shuf(D.slice());cur=0;busy=false;over=false;drawHouse();say('Tap a ship name to change it, then spin to begin.');zr()}
+try{const sv=JSON.parse(localStorage.getItem('zathuraNames')||'[]');sv.forEach((x,i)=>{if(x&&i<4)NM[i]=String(x).slice(0,14)})}catch(e){}
+$('zpl').onclick=e=>{const b=e.target.closest('.nm');if(!b)return;const i=+b.dataset.i,v=prompt('Name for ship '+(i+1)+':',NM[i]);if(v===null)return;const t=v.trim().slice(0,14);if(!t)return;NM[i]=t;pl[i].n=t;try{localStorage.setItem('zathuraNames',JSON.stringify(NM))}catch(x){}zr()};
+$('zn').onclick=()=>{if(pl.some(p=>p.pos))return;n=n%4+1;if(n<2)n=2;zreset()};
+$('zroll').onclick=zturn;$('zagain').onclick=zreset;zreset();
 const open=()=>{Z.classList.add('show');sfxPlay('zopen');const mine=ev;setTimeout(()=>{if(ev===mine)sfxStop()},4200)};
 const close=()=>{Z.classList.remove('show');sfxStop();render()};
 let taps=0,tt;$('trap').onclick=()=>{taps++;clearTimeout(tt);tt=setTimeout(()=>taps=0,3000);if(taps>=3){taps=0;open()}};
