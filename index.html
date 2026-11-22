@@ -71,15 +71,18 @@ box-shadow:inset 0 0 30px 8px #4a361b77,inset 0 0 4px 1px #2a1d0e99,0 20px 44px 
 .ill.g{filter:sepia(.32) contrast(1.02)}
 @keyframes kb{from{transform:scale(1.0)}to{transform:scale(1.035)}}
 @keyframes a1{to{transform:translate(-50%,-50%) scale(1.12) rotate(4deg)}}@keyframes a2{to{transform:translate(-50%,-56%) rotate(-6deg)}}@keyframes a3{to{transform:translate(-30%,-65%) rotate(12deg)}}@keyframes sp{to{filter:hue-rotate(20deg)}}
+#ctl{display:flex!important;flex-direction:column}#jpl{display:grid;grid-template-columns:1fr 1fr;gap:8px}#jpl .nm,#zpl .nm{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+#leg{font:11px Arial;color:#c5bea4;text-align:center}#jgrid{display:flex;gap:4px;align-items:center;justify-content:center;font:11px Arial;color:#c5bea4}#jgrid i{width:16px;height:16px;border:1px solid #8d784d;background:#171c15}#jgrid i.on{background:#a34c35}
+.die b{grid-area:1/1/4/4;place-self:center;font:bold 22px Arial;color:#1a1a14}.lnk{background:none!important;border:0!important;color:#bda46d;font-size:11px;text-decoration:underline;padding:2px}
+#rs,#ch{position:fixed;inset:0;z-index:15;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#000c;text-align:center;padding:20px;font-family:Georgia}#rs.show,#ch.show{display:flex}
+#rst{font:700 clamp(18px,5vw,28px)/1.3 Georgia;color:#f0b94d;text-transform:uppercase;letter-spacing:.05em}#rsr{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}#rsr div{min-width:90px;padding:10px;background:#171c15;border:2px solid #8d784d}#rsr div.ok{border-color:#59b36b;background:#1d3a24}#rsr b{display:block;font:14px Georgia}#rsr span{font-size:38px}
+#rsb{width:min(420px,80vw);height:10px;background:#333}#rsb i{display:block;height:100%;background:#f0b94d}#rsm{font:18px Georgia;color:#f0dfb5;min-height:26px}#cht{font:20px Georgia;color:#f0dfb5;margin-bottom:14px}#chb{display:flex;flex-direction:column;gap:10px}
 </style></head><body>
 <div id="app">
 <h1>JUMANJI</h1>
 <div id="wrap"><svg id="b" viewBox="0 0 1000 1000" role="img" aria-label="Jumanji board with a winding path of 42 spaces"></svg></div>
-<div id="ctl">
- <div class="pl on" id="p0"><b>Peter</b><span id="m0"></span></div>
- <div class="mid"><div id="lab"></div><div class="dice" id="dice"><div class="die" id="d0"></div><div class="die" id="d1"></div></div><button id="roll">Roll the dice</button><button id="again" hidden>Play again</button></div>
- <div class="pl" id="p1"><b>Judy</b><span id="m1"></span></div>
-</div>
+<div id="leg">🦏 Rhino · 🌿 Jungle · 5·8 Wait for 5 or 8 · every other space is a Danger card</div><div id="jgrid"></div>
+<div id="ctl"><div id="jpl"></div><div class="mid"><div id="lab"></div><div class="dice" id="dice"><div class="die" id="d0"></div><div class="die" id="d1" style="display:none"></div></div><button id="roll">Roll the number die</button><button id="again" hidden>Play again</button><button id="jn" class="lnk"></button></div></div>
 <div id="trap" aria-hidden="true"></div>
 <div id="status">The path is waiting. The game is not.</div>
 <button id="mute">Sound: on</button>
@@ -90,7 +93,8 @@ box-shadow:inset 0 0 30px 8px #4a361b77,inset 0 0 4px 1px #2a1d0e99,0 20px 44px 
 <div id="zhouse"></div><div class="zctl"><div id="zpl"></div><div class="mid"><div id="zlab"></div><button id="zroll">Spin and draw</button><button id="zagain" hidden>Play again</button><button id="zn" class="lnk"></button></div></div>
 <div id="zstat">Earth to Zathura and back again.</div><button id="zclose">Close the box</button>
 <div id="zc"><div class="zcard"><div class="zt" id="zct"></div><div id="zce"></div></div><button id="zgo">Carry out orders</button></div></div>
-<div id="intro"><div><h1>JUMANJI</h1><p>A game for two players. Roll the dice, follow the path, and reach the Golden City.</p><p><i>Do not begin unless you intend to finish.</i></p><button id="begin">Open the game</button></div></div>
+<div id="rs"><div id="rst"></div><div id="rsr"></div><div id="rsb"><i></i></div><div id="rsm"></div></div><div id="ch"><div><div id="cht"></div><div id="chb"></div></div></div>
+<div id="intro"><div><h1>JUMANJI</h1><p>A game for two to four players. Roll the number die, follow the space directions, rescue each other from danger, and reach the center by exact count.</p><p><i>Do not begin unless you intend to finish.</i></p><button id="begin">Open the game</button></div></div>
 <script>
 (()=>{
 const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id),B=$('b');
@@ -155,24 +159,24 @@ const EV={
 37:{k:'python',t:'Python sneaks into camp',m:'An eight-foot python quietly appears, creeping across the mantle clock.',e:'Go back one space.',d:-1,img:'python',alt:'A giant python coils around a chandelier',s:'python'},
 39:{k:'quake',t:'Earthquake',m:'You are so close, and now the floor begins to shake.',e:'Go back two spaces.',d:-2,r:['YOU’RE ALMOST THERE WITH MUCH AT STAKE,','BUT NOW THE GROUND BEGINS TO QUAKE.'],img:'quake',alt:'A grand staircase splits apart as the house shakes',s:'quake',bg:'#4a3a30,#0e0a08'},
 41:{k:'volcano',t:'Volcano erupts',m:'The room shakes. Molten lava pours from the fireplace as the volcano erupts.',e:'Go back three spaces.',d:-3,img:'volcano',alt:'A man aims a rifle while a volcano erupts behind him',s:'volcano'}};
+const JU=[14,28,38],WT=[9,21,32],jrh0=[6,18,25,35],SPC={};jrh0.forEach(k=>SPC[k]=['#8a6a44','🦏']);JU.forEach(k=>SPC[k]=['#2d6a35','🌿']);WT.forEach(k=>SPC[k]=['#2f6f7a','5·8']);
 for(let i=0;i<N;i++){
  const a=at(i*TS+3),b=at((i+1)*TS-3),ha=wd(i)/2,hb=wd(i+1)/2;
  const pts=[[a.x+a.nx*ha,a.y+a.ny*ha],[b.x+b.nx*hb,b.y+b.ny*hb],[b.x-b.nx*hb,b.y-b.ny*hb],[a.x-a.nx*ha,a.y-a.ny*ha]].map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ');
- el('polygon',{points:pts,fill:i%2?'#3f4d38':'#e9e0c4',class:'tile'});
+ el('polygon',{points:pts,fill:SPC[i+1]?SPC[i+1][0]:i%2?'#3f4d38':'#e9e0c4',class:'tile'});
  const c=at((i+.5)*TS);el('text',{x:c.x,y:c.y,class:'num',style:'fill:'+(i%2?'#cfc7a8':'#2a2b20')}).textContent=i+1;
- if(EV[i+1])el('circle',{cx:c.x-c.nx*(wd(i+.5)/2+1),cy:c.y-c.ny*(wd(i+.5)/2+1),r:7,class:'dot'});
+ if(SPC[i+1])el('text',{x:c.x,y:c.y+24,class:'num',style:'font-size:17px;fill:#fff'}).textContent=SPC[i+1][1];
 }
 el('circle',{cx:CX,cy:CY,r:60,fill:'#a77a31',stroke:'#f0d48d','stroke-width':8});
 el('path',{d:'M-28 18v-26h10v-14h10v14h10v-30h10v30h10v-14h8v40z',transform:`translate(${CX} ${CY}) scale(1.3)`,fill:'#f1d28a',stroke:'#704d1d','stroke-width':1.5});
 for(let i=0;i<12;i++)el('circle',{cx:60+rnd()*880,cy:60+rnd()*880,r:3,class:'ff',style:`animation-delay:${rnd()*3}s`});
-const tk=[0,1].map(i=>{const g=el('g',{class:'tok',style:`animation-delay:${i*.5}s`}),c=i?'#c7a64f':'#a34c35',d=i?'#7a6425':'#5e2a1d',k='#f4e9c8';
+const PCX=[['#a34c35','#5e2a1d'],['#c7a64f','#7a6425'],['#3f7fb5','#1f4566'],['#59a05a','#2c5c2e']];
+const tk=[0,1,2,3].map(i=>{const g=el('g',{class:'tok',style:`animation-delay:${i*.5}s`}),c=PCX[i][0],d=PCX[i][1],k='#f4e9c8';
  el('ellipse',{cy:14,rx:13,ry:5,fill:'#000',opacity:.35},g);
  el('path',{d:'M-11 14q1-14 6-20h10q5 6 6 20z',fill:c,stroke:k,'stroke-width':1.8},g);
  el('circle',{cy:-12,r:7,fill:c,stroke:k,'stroke-width':1.8},g);
  el('ellipse',{cy:-17,rx:12,ry:3.5,fill:d,stroke:k,'stroke-width':1.4},g);
  el('path',{d:'M-7-17q7-12 14 0z',fill:d,stroke:k,'stroke-width':1.4},g);return g});
-const pl=[{n:'Peter',pos:0,skip:0},{n:'Judy',pos:0,skip:0}];
-function place(i){const p=pl[i].pos,o=i?22:-22;let x,y;if(!p){x=SX+o;y=SY}else if(p>N){x=CX+o;y=CY}else{const c=at((p-.5)*TS);x=c.x+o;y=c.y+(i?10:-10)}tk[i].style.transform=`translate(${x}px,${y}px) scale(1.5)`}
 /* ---- Audio: everything synthesized, no files ---- */
 let AC,M,nb,ev=null,muted=false;
 function initAudio(){if(AC)return;AC=new(window.AudioContext||window.webkitAudioContext)();M=AC.createGain();M.gain.value=.8;M.connect(AC.destination);
@@ -218,32 +222,68 @@ function sfxStop(){if(!AC||!ev)return;const e=ev;e.gain.setTargetAtTime(0,AC.cur
 const diceRattle=()=>{for(let i=0;i<9;i++)burst('highpass',1800+Math.random()*1500,.001,.05,.35,i*.07)};
 const step=p=>tone(260+p*9,.005,.07,.12,'triangle');
 /* ---- Game flow ---- */
-let cur=0,busy=false,over=false,maxp=0;
-function render(){[0,1].forEach(i=>{place(i);$('m'+i).textContent=pl[i].pos?`Space ${Math.min(pl[i].pos,42)} of 42`:'At the Deepest Jungle';$('p'+i).classList.toggle('on',i===cur&&!over)});
- $('lab').textContent=over?'Game complete':pl[cur].n+"'s turn";$('roll').disabled=busy||over;$('roll').hidden=over;$('again').hidden=!over;
- maxp=Math.max(maxp,pl[0].pos,pl[1].pos);document.body.style.setProperty('--t',Math.min(1,maxp/N));if(AC&&!ev)AC.am.gain.value=.03+.05*maxp/N}
-const walk=(p,to)=>stepTo(p,to,N,render,170);
 function scene(E){const V=$('ev');V.className='show '+E.k+(E.img?' illus':'');V.style.background=E.bg?`radial-gradient(${E.bg})`:'';
  $('rd').innerHTML=(E.r||[]).map(l=>`<span class="l">${l}</span>`).join('');document.querySelector('.ec').className='ec'+(E.r?' rid':'');
  $('et').textContent=E.t;$('em').textContent=E.m;$('ee').textContent=E.e;
  $('art').innerHTML=E.img?`<img class="ill${E.img==='lion'||E.img==='rhino'?' g':''}" src="${IMG[E.img]}" alt="${E.alt}">`:E.art.map(a=>`<span class="a" style="left:${a[1]}%;top:${a[2]}%;font-size:${a[3]}vmin;transform:translate(-50%,-50%);${a[4]?'animation:'+a[4]+' 1.2s ease-in-out infinite alternate':''}">${a[0]}</span>`).join('');
  sfxPlay(E.s);return new Promise(r=>{$('go').onclick=()=>{sfxStop();V.className='';V.style.background='';r()}})}
-async function turn(){
- if(busy||over)return;busy=true;const p=pl[cur];render();
- if(p.skip){p.skip--;$('status').textContent=p.n+' loses this turn.';cur=1-cur;busy=false;render();return}
-const[a,b]=await rollDice('dice','d'),tot=a+b;
- if(p.jail){if(tot!==5&&tot!==8){$('status').textContent=`${p.n} rolls ${tot}. Still trapped. Only a 5 or an 8 will do.`;cur=1-cur;busy=false;render();return}p.jail=0}
- $('status').textContent=`${p.n} rolls ${a} + ${b} = ${tot}.`;p.last=tot;await walk(p,p.pos+tot);
- if(p.pos>=N){over=true;p.pos=N+1;render();await walk(p,N+1);
-  await scene({k:'win',t:'JUMANJI',m:p.n+' has reached the Golden City. Speak its name aloud: JUMANJI!',e:'The game is over. The jungle returns to its world.',art:[['🏛️',50,26,40,'a2'],['✨',24,30,14,'a1'],['✨',78,20,14,'a2']],s:'win'});
-  $('status').textContent='JUMANJI! '+p.n+' wins. The box feels heavier than it should...';render();return}
- const E=EV[p.pos];
- if(E){if(E.skip)p.skip++;if(E.jail)p.jail=1;await scene(E);const d=E.undo?-p.last:E.d;if(d)await walk(p,p.pos+d);
-  $('status').textContent=p.n+': '+E.e+(d?` Now at space ${p.pos}.`:'');if(E.again){busy=false;render();return}}
- cur=1-cur;busy=false;render()}
-function reset(){pl.forEach(p=>{p.pos=0;p.skip=0;p.jail=0;p.last=0});cur=0;busy=false;over=false;maxp=0;showDice('d');$('status').textContent='The path is waiting. The game is not.';render()}
-$('again').onclick=reset;showDice('d');
-$('roll').onclick=turn;
+const PC=[['#a34c35','#5e2a1d'],['#c7a64f','#7a6425'],['#3f7fb5','#1f4566'],['#59a05a','#2c5c2e']],OFF=[[-22,-10],[22,-10],[-22,12],[22,12]];
+const JN=['Peter','Judy','Alan','Sarah'];try{JSON.parse(localStorage.getItem('jumanjiNames')||'[]').forEach((x,i)=>{if(x&&i<4)JN[i]=String(x).slice(0,14)})}catch(e){}
+const GR=12,S={rope:['🪢','Rope'],saber:['🗡️','Saber'],die:['🎲','Die'],axe:['🪓','Axe'],racquet:['🎾','Racquet'],door:['🚪','Open door'],raft:['🛶','Raft'],hourglass:['⏳','Hourglass']};
+const CARDS='Ants|axe|3|Marching, eating, watch your feet.|🐜;Bats|racquet|1|Night flyers, you had better run.|🦇|bat|bat;Collapsing Building|axe|1|Splintered rafters pin you down.|🏚️;Crocodile|raft|3|A 25-foot Nile reptile, bigger than a great white shark.|🐊;Disease|die|3|Invisible jungle plague germs are spreading.|🦠;Disintegration|die|3|Keep playing or you vaporize.|💨;Earthquake|die|5|The ground shakes right near the finish.|🌋|quake|quake;Elephant|door|3|A charge worse than a freight train.|🐘;Hailstorm|die|3|Fist-sized ice slices through umbrellas.|🌨️;Hippopotamus|raft|3|A yawning, tusked "river horse."|🦛|hippo|hippo;Hyenas|saber|1|Laughing, and it is no joke.|🐺;Jaguar|rope|1|A spotted cat blends into the jungle.|🐆;Leeches|raft|1|Thousands rise from the flood to suck your blood.|🪱;Lion|door|3|Sharp fangs, so move quickly.|🦁|lion|lion;Monkeys|door|1|They slow the expedition.|🐒|monkeys|monkeys;Monsoon|raft|5|A quarter-moon monsoon floods your lagoon.|🌧️|monsoon|monsoon;Mosquito|racquet|3|A tiny bite, then itching and twitching.|🦟|mosquito|;Pelican|die|1|A six-foot wingspan mistakes the board for a fish.|🐦;Piranhas|raft|1|Raging waters, with piranhas below.|🐟;Pod|axe|3|Giant yellow flesh-eating flowers.|🌼|plants|veg;Purple Flowers|saber|3|Pretty plants throwing poison barbs.|🪻|plants|veg;Python|saber|3|A big green snake. The clue rhymes with "lake".|🐍|python|python;Quicksand|axe|3|The floor is quicker than quicksand.|🏜️|quicksand|quick;Rhinoceros|rope|5|That is not thunder, so do not stay put.|🦏|rhino|rhino;Spider|racquet|1|Eight hands offered as "help."|🕷️|spiders|spiders;Thunderstorm|die|1|Lightning bolts: take cover or flee.|⛈️;Tornado|rope|3|A howling gale, so hold on.|🌪️;Van Pelt|saber|5|A wild hunter makes you feel like a child.|🏹|hunter|hunter;Vegetation|saber|3|It grows faster than bamboo.|🌿|plants|veg;Zebras|door|1|Hush. The striped beasts hold the power.|🦓'.split(';').map(l=>{const f=l.split('|');return{name:f[0],s:f[1],n:+f[2],clue:f[3],em:f[4],img:IMG[f[5]]?f[5]:null,sfx:f[6]}});
+let n=2,pl,rhino,deck,disc,grid,jrh=[6,18,25,35],cur=0,busy=false,over=false,maxp=0;
+const rh=el('g',{class:'tok'});el('text',{'text-anchor':'middle',style:'font-size:34px'},rh).textContent='🦏';
+const js=t=>$('status').textContent=t,jshuf=a=>{for(let i=a.length;i>1;){const j=Math.random()*i--|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const ty=p=>jrh.includes(p)?'rh':JU.includes(p)?'ju':WT.includes(p)?'wt':'bl',others=p=>pl.filter(q=>q!==p),blocked=q=>rhino===pl.indexOf(q);
+const nd=v=>$('d0').innerHTML=`<b>${v}</b>`;
+async function roll8(){diceRattle();let v;for(let i=0;i<9;i++){v=1+Math.random()*8|0;nd(v);await sleep(70)}return v}
+function place(i){const p=pl[i].pos,o=OFF[i];let x,y;if(!p){x=SX+o[0];y=SY+o[1]}else if(p>=N){x=CX+o[0];y=CY+o[1]}else{const c=at((p-.5)*TS);x=c.x+o[0];y=c.y+o[1]}tk[i].style.transform=`translate(${x}px,${y}px) scale(1.5)`}
+function render(){tk.forEach((t,i)=>{t.style.display=i<n?'':'none';if(i<n)place(i)});
+ let x=96,y=100;if(rhino>=0){const c=at((pl[rhino].pos+.5)*TS);x=c.x;y=c.y-6}rh.style.transform=`translate(${x}px,${y}px)`;
+ $('jpl').innerHTML=pl.map((p,i)=>`<div class="pl${i===cur&&!over?' on':''}"><b class="nm" data-i="${i}" style="color:${PC[i][0]}">${p.n}</b>${p.pos?(p.pos>=N?'In the center':'Space '+p.pos+' of '+N):'At the start'}${rhino===i?' · blocked by the rhino':''}</div>`).join('');
+ $('jgrid').innerHTML='Doomsday Grid '+Array.from({length:GR},(_,i)=>`<i class="${i<grid.length?'on':''}"></i>`).join('');
+ $('lab').textContent=over?'Game over':pl[cur].n+"'s turn";$('roll').disabled=busy||over;$('roll').hidden=over;$('again').hidden=!over;$('jn').textContent='Players: '+n;
+ maxp=Math.max(maxp,...pl.map(p=>p.pos));document.body.style.setProperty('--t',Math.min(1,maxp/N));if(AC&&!ev)AC.am.gain.value=.03+.05*maxp/N}
+const walk=(p,to)=>stepTo(p,to,N,render,170);
+const open_=(t,q)=>{while(t>0&&t<N&&pl.some(o=>o!==q&&o.pos===t))t++;return t};
+async function mvf(q,k){if(blocked(q)||q.pos+k>N)return false;let t=q.pos+k;if(t<N)t=open_(t,q);await walk(q,t);if(q.pos>=N){await win(q);return true}return false}
+async function mvb(q,k){let t=Math.max(0,q.pos-k);t=open_(t,q);await walk(q,t)}
+function show(E,btn){$('go').textContent=btn;E.s=SFX[E.s]?E.s:'veg';return scene(E)}
+async function win(q){over=true;render();await show({k:'win',t:'JUMANJI',m:q.n+' reached the center. Call it out: JUMANJI!',e:'The game is over.',art:[['🏛️',50,26,40,'a2'],['✨',24,30,14,'a1'],['✨',78,20,14,'a2']],s:'win'},'Close card');js('JUMANJI! '+q.n+' wins.');render()}
+async function lose(){over=true;render();await show({k:'guide',t:'The jungle wins',m:'The Doomsday Grid is full before anyone reached the center. All players lose. Play again until someone wins!',e:'',art:[['🌿',30,30,30,'a1'],['🌿',72,40,30,'a2']],s:'law'},'Play again');reset()}
+function ask(t,o){return new Promise(r=>{$('cht').textContent=t;$('chb').innerHTML='';o.forEach((x,i)=>{const b=document.createElement('button');b.textContent=x;b.onclick=()=>{$('ch').classList.remove('show');r(i)};$('chb').appendChild(b)});$('ch').classList.add('show')})}
+function rescue(hs,sy,wild){return new Promise(res=>{const ks=Object.keys(S),st=hs.map(h=>({h,ok:0,f:'🎲',next:Math.random()*500}));
+ $('rst').innerHTML=`Rolling against time!<br>Need ${S[sy][0]} ${S[sy][1]}${wild?' or ⏳ Hourglass':''}`;$('rsm').textContent='';
+ const dr=()=>$('rsr').innerHTML=st.map(s=>`<div class="${s.ok?'ok':''}"><b>${s.h.n}</b><span>${s.f}</span></div>`).join('');
+ const bar=$('rsb').firstChild;bar.style.transition='none';bar.style.width='100%';bar.offsetWidth;bar.style.transition='width 8s linear';bar.style.width='0';
+ $('rs').classList.add('show');dr();diceRattle();const t0=Date.now();
+ const iv=setInterval(()=>{const t=Date.now()-t0;st.forEach(s=>{if(!s.ok&&t>=s.next){const k=ks[Math.random()*8|0];s.f=S[k][0];s.next=t+1100+Math.random()*600;if(k===sy||(wild&&k==='hourglass'))s.ok=1}});dr();
+  const all=st.every(s=>s.ok);if(all||t>=8000){clearInterval(iv);$('rsm').textContent=all?'Everyone matched. Rescued!':'Time is up!';setTimeout(()=>{$('rs').classList.remove('show');res(all)},1600)}},120)})}
+async function danger(p,jungle){for(;;){if(!deck.length)deck=jshuf(disc.splice(0));const c=deck.pop(),sy=S[c.s];
+  await show({k:c.img||'guide',t:c.name,m:c.clue,e:`Rescue symbol: ${sy[0]} ${sy[1]} · ${c.n} space${c.n>1?'s':''}`,img:c.img,alt:c.name,art:[[c.em,50,30,34,'a2']],s:c.sfx},'Rescue time!');
+  const ok=await rescue(jungle?pl:others(p),c.s,n>2);
+  if(ok){disc.push(c);js(`Rescued! ${jungle?'All players':'Fellow players'} move ahead ${c.n}.`);for(const q of jungle?pl:others(p))if(await mvf(q,c.n))return true;return false}
+  grid.push(c);render();if(grid.length>=GR){await lose();return true}
+  if(!jungle){js(`${p.n} was not rescued and moves back ${c.n}.`);await mvb(p,c.n);return false}
+  js('Not everyone matched. Everyone stays put. Draw another card.');await sleep(1200)}}
+async function wait58(p){let r=(cur+1)%n;js(p.n+' is sucked into the jungle. Wait for a 5 or an 8!');await sleep(1000);
+ for(;;){if(r===cur)r=(r+1)%n;const q=pl[r],v=await roll8();js(`${q.n} rolls ${v}.`);await sleep(700);
+  if(v===5||v===8){js(p.n+' is safe and stays put.');return false}
+  await mvb(p,1);if(!p.pos){js(p.n+' is back at the start. Turn over.');return false}r=(r+1)%n}}
+async function direct(p){if(!p.pos)return false;const t=ty(p.pos);
+ if(t=='wt')return wait58(p);if(t=='ju'){js('Jungle! Everyone is trapped and must rescue each other.');return danger(p,true)}
+ if(t=='rh'){const o=others(p).filter(q=>q.pos<N),k=await ask('Rhino space! Block a pawn?',[...o.map(q=>q.n),'Not this time']);if(k<o.length){rhino=pl.indexOf(o[k]);js(`The rhino now blocks ${o[k].n}.`);render()}return false}
+ return danger(p,false)}
+async function turn(){if(busy||over)return;busy=true;const p=pl[cur];render();const v=await roll8();js(`${p.n} rolls ${v}.`);let end;
+ if(rhino===cur){if(v%2===0){rhino=-1;js(`${p.n} rolls even. The rhino goes home and ${p.n} moves ${v}.`);render();end=await mvf(p,v)}else js('Odd number. The rhino keeps blocking '+p.n+'.')}
+ else end=await mvf(p,v);
+ if(!end&&!over)end=await direct(p);
+ if(!end&&!over)cur=(cur+1)%n;busy=false;render()}
+function reset(){pl=JN.slice(0,n).map(x=>({n:x,pos:0}));rhino=-1;deck=jshuf(CARDS.slice());disc=[];grid=[];cur=0;busy=false;over=false;maxp=0;nd(8);js('The path is waiting. The game is not.');render()}
+$('again').onclick=reset;$('roll').onclick=turn;
+$('jpl').onclick=e=>{const b=e.target.closest('.nm');if(!b)return;const i=+b.dataset.i,v=prompt('Name for player '+(i+1)+':',JN[i]);if(v===null||!v.trim())return;JN[i]=v.trim().slice(0,14);pl[i].n=JN[i];try{localStorage.setItem('jumanjiNames',JSON.stringify(JN))}catch(x){}render()};
+$('jn').onclick=()=>{if(pl.some(p=>p.pos))return;n=n%4+1;if(n<2)n=2;reset()};reset();
+
 $('begin').onclick=()=>{initAudio();if(AC.state==='suspended')AC.resume();$('intro').style.display='none'};
 $('mute').onclick=()=>{muted=!muted;if(M)M.gain.value=muted?0:.8;$('mute').textContent='Sound: '+(muted?'off':'on')};
 
