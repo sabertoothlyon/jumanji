@@ -83,7 +83,7 @@ main{order:1}#wrap{height:auto;width:100%}#trap{height:1.2rem;margin-top:.5rem}
 <main><div id="wrap"><svg id="b" viewBox="0 0 1000 1000" role="img" aria-label="Jumanji board with a winding path of 42 spaces"></svg></div><div id="trap" aria-hidden="true"></div></main>
 <aside id="R"><section class="stone flip"><i class="leaf"></i><div class="tx"><h3>Adventurers Beware:</h3><p class="big">Do not begin unless you intend to finish.</p><p>The exciting consequences of the game will vanish only when a player has reached Jumanji and called out its name.</p></div><i class="leaf"></i></section>
 <div class="mid"><div id="lab"></div><div class="dice" id="dice"><div class="die" id="d0"></div><div class="die" id="d1"></div></div><button id="roll">Roll the dice</button><button id="again" hidden>Play again</button><div class="np" id="np"></div></div>
-<div id="status">The path is waiting. The game is not.</div><div id="jgrid"></div><div id="leg">Brown = Rhino · Green = Jungle · Blue 5·8 = Wait for 5 or 8 · Enter or Space = roll · 1-4 = rescue roll</div><button id="mute">Sound: on</button></aside>
+<div id="status">Afraid? You don’t even know what afraid is.</div><div id="jgrid"></div><div id="leg">Brown = Rhino · Green = Jungle · Blue 5·8 = Wait for 5 or 8 · Enter or Space = roll · 1-4 = rescue roll</div><button id="mute">Sound: on</button></aside>
 </div>
 <div id="ev"><div class="fx fr"></div><div class="fx fe"></div><div class="art" id="art"></div><div class="fx ff2"></div>
  <div class="ec"><div id="rd"></div><h2 id="et"></h2><p id="em"></p><div id="ee"></div><button id="go">Return to the board</button></div></div>
@@ -253,7 +253,7 @@ async function turn(){if(busy||over)return;busy=true;const p=pl[cur];render();co
  else end=await mvf(p,v);
  if(!end&&!over)end=await direct(p);
  if(!end&&!over){if(dd)js(p.n+' rolled doubles and goes again!');else cur=(cur+1)%n}busy=false;render()}
-function reset(){pl=JN.slice(0,n).map(x=>({n:x,pos:0}));rhino=-1;deck=jshuf(CARDS.slice());disc=[];grid=[];cur=0;busy=false;over=false;maxp=0;showDice('d',4,4);js('The path is waiting. The game is not.');render()}
+function reset(){pl=JN.slice(0,n).map(x=>({n:x,pos:0}));rhino=-1;deck=jshuf(CARDS.slice());disc=[];grid=[];cur=0;busy=false;over=false;maxp=0;showDice('d',4,4);js('Afraid? You don’t even know what afraid is.');render()}
 $('again').onclick=reset;$('roll').onclick=turn;
 $('jpl').onclick=e=>{const b=e.target.closest('.nm');if(!b)return;const i=+b.dataset.i,v=prompt('Name for player '+(i+1)+':',JN[i]);if(v===null||!v.trim())return;JN[i]=v.trim().slice(0,14);pl[i].n=JN[i];try{localStorage.setItem('jumanjiNames',JSON.stringify(JN))}catch(x){}render()};
 $('np').onclick=$('inp').onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled||pl.some(p=>p.pos))return;n=+b.dataset.k;reset()};reset();
